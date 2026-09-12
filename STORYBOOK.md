@@ -6,7 +6,7 @@ A portfolio companion built from Gamelog's actual React components and CSS token
 
 [Open Gamelog's design system](https://esm000ve.github.io/Gamelog/?path=/story/welcome--introduction).
 
-GitHub Pages hosts the static site independently of your computer. Updates pushed to `main` rebuild and deploy it through `.github/workflows/deploy-storybook.yml`. You can also run that workflow manually from GitHub Actions. The address remains stable while this repository and its Pages hosting remain enabled.
+GitHub Pages hosts the static site independently of your computer. Updates pushed to `storybook-site` rebuild and deploy it through `.github/workflows/deploy-storybook.yml`. This dedicated branch preserves the portfolio library separately from the app's `main` branch, where Storybook was removed. The address remains stable while this repository and its Pages hosting remain enabled.
 
 ## Run locally
 
