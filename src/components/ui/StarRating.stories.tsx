@@ -10,7 +10,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Read-only rating display. Worth calling out: this is one of the few places in the codebase that gets ARIA right on the first try — the whole row is wrapped in a single `role="img"` with a computed `aria-label` ("4.5 out of 5 stars"), and every individual star icon is `aria-hidden`, so a screen reader hears one clean announcement instead of five fragments. Consolidated across the app (LibraryTableView, CoverCard, LogEditor, etc.).\n\n**Accessibility Testing Status (4-vector)**:\n- **Default State**: Tested\n- **Advanced States**: Tested\n- **Keyboard Navigation**: Tested\n- **Screen Reader**: Not Tested (automated pass only; manual screen-reader review pending)',
+          "Read-only rating display with one accessible label describing the value out of 5. Individual star icons are decorative. Numeric value visibility and icon size are configurable. Manual screen-reader verification remains separate from automated checks.",
       },
     },
   },
@@ -21,8 +21,7 @@ const meta = {
     },
     size: {
       control: { type: "number", min: 8, max: 32 },
-      description:
-        "Icon size in px. Real usage: 11 (default, CoverCard-style contexts), 12 (LogEditor), 14 (GameDetailScreen).",
+      description: "Icon size in px. Real usage: 11 (default, CoverCard-style contexts), 12 (LogEditor), 14 (GameDetailScreen).",
     },
     showValue: { control: "boolean" },
   },

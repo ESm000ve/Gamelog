@@ -30,8 +30,8 @@ const withTheme: Decorator = (Story, context) => {
         background: "var(--apple-window-bg)",
         color: "var(--apple-label)",
         fontFamily: "var(--apple-font-text)",
-        minHeight: "100vh",
-        padding: "var(--space-8)",
+        minHeight: context.viewMode === "docs" ? undefined : "100vh",
+        padding: context.parameters.layout === "fullscreen" ? 0 : "var(--space-8)",
       }}
     >
       <Story />
@@ -53,7 +53,7 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        order: ["Welcome", "UI", "Components"],
+        order: ["Welcome", "Foundations", "UI", "Components", "Patterns", "Decisions"],
       },
     },
   },

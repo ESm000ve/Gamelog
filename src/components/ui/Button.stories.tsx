@@ -93,7 +93,7 @@ export const Loading: Story = {
     docs: {
       description: {
         story:
-          "**Known issue, not fixed in this pass (stories only):** the loading spinner's inline style references `animation: \"spin 1s linear infinite\"`, but no `@keyframes spin` is defined anywhere in the app's CSS — only `@keyframes pulse` exists in `globals.css`. The `Loader2` icon currently renders static instead of spinning. Flagging here since the story surfaces it directly; logged for a future fix pass.",
+          "Loading displays an animated icon and disables the button. The spinner uses the btn-spin keyframe in Button.css. Reduced-motion behavior still needs review.",
       },
     },
   },

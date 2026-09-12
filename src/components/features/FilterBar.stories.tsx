@@ -1,13 +1,11 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FilterBar } from "./FilterBar";
-import type { FilterSpec } from "../services/filterEngine";
-import { db } from "../db/schema";
-import type { Tag } from "../types";
+import type { FilterSpec } from "../../services/filterEngine";
+import { setDemoTags } from "../../../.storybook/tags.fixture";
+import type { Tag } from "../../types";
 
-// Same reasoning as TagSelect.stories.tsx: FilterBar's Tags facet reads
-// straight from the real TagsRepo/Dexie layer, so these stories seed the
-// browser's actual IndexedDB via a Storybook loader before each render.
+// Storybook resolves TagsRepo to an in-memory fixture; app data is untouched.
 const SAMPLE_TAGS: Tag[] = [
   { id: "tag-cozy", name: "Cozy", createdAt: Date.now(), updatedAt: Date.now() },
   { id: "tag-metroidvania", name: "Metroidvania", createdAt: Date.now(), updatedAt: Date.now() },
@@ -15,7 +13,7 @@ const SAMPLE_TAGS: Tag[] = [
 ];
 
 async function seedTags() {
-  await db.tags.bulkPut(SAMPLE_TAGS);
+  setDemoTags(SAMPLE_TAGS);
 }
 
 function Demo({ initialSpec = {} as FilterSpec }: { initialSpec?: FilterSpec }) {
@@ -34,6 +32,7 @@ const meta = {
   parameters: {
     layout: "padded",
     docs: {
+      story: { inline: false, height: 540 },
       description: {
         component:
           'The library filter dropdown — Status, Genres, Platforms, and Tags facets plus three numeric ranges (Release Year, Length, Rating). Click "Filters" to open the panel; the badge count on the button reflects every active facet. See `ActiveFilterBadges.stories.tsx` for the companion removable-badge row this component is normally paired with.',

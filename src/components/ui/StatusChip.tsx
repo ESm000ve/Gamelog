@@ -1,4 +1,4 @@
-import type { Status, Completion } from "../types";
+import type { Status, Completion } from "../../types";
 import "./StatusChip.css";
 
 // ─── Status → color mapping ───────────────────────────────────────────────────

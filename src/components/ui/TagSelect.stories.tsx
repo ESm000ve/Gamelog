@@ -1,15 +1,10 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TagSelect } from "./TagSelect";
-import { db } from "../db/schema";
-import type { Tag } from "../types";
+import { setDemoTags } from "../../../.storybook/tags.fixture";
+import type { Tag } from "../../types";
 
-// TagSelect reads its tag list from TagsRepo (real Dexie/IndexedDB), not from
-// props — there's no mocking layer to inject fake data through. Storybook
-// runs in a real browser with real IndexedDB, so the cleanest option is to
-// seed the same database the app itself uses, via a Storybook `loader` that
-// runs (and is awaited) before each story mounts. `bulkPut` is an upsert, so
-// re-seeding on every reload is safe and idempotent.
+// Storybook resolves TagsRepo to an in-memory fixture; app data is untouched.
 const SAMPLE_TAGS: Tag[] = [
   { id: "tag-cozy", name: "Cozy", createdAt: Date.now(), updatedAt: Date.now() },
   { id: "tag-metroidvania", name: "Metroidvania", createdAt: Date.now(), updatedAt: Date.now() },
@@ -20,17 +15,17 @@ const SAMPLE_TAGS: Tag[] = [
 ];
 
 async function seedTags() {
-  await db.tags.bulkPut(SAMPLE_TAGS);
+  setDemoTags(SAMPLE_TAGS);
 }
 
 async function clearTags() {
-  await db.tags.clear();
+  setDemoTags([]);
 }
 
 function Demo({ initialIds = [] as string[] }: { initialIds?: string[] }) {
   const [value, setValue] = useState<string[]>(initialIds);
   return (
-    <div style={{ width: 360 }}>
+    <div style={{ width: "min(360px, 100%)" }}>
       <TagSelect value={value} onChange={setValue} />
     </div>
   );
@@ -43,9 +38,10 @@ const meta = {
   parameters: {
     layout: "padded",
     docs: {
+      story: { inline: false, height: 540 },
       description: {
         component:
-          "Reads and writes tags through the real `TagsRepo`/Dexie data layer — there's no prop-level mock for it. These stories seed the browser's actual IndexedDB with sample tags via a Storybook `loader` before each render (see the story source). Type in the input to see autocomplete filtering, press Enter to create a new tag, or Backspace on an empty input to remove the last selected tag.",
+          "The real TagSelect component uses a Storybook-only in-memory TagsRepo replacement. Demo tags never touch the app database. Type in the input to see autocomplete filtering, press Enter to create a new tag, or Backspace on an empty input to remove the last selected tag.",
       },
     },
   },

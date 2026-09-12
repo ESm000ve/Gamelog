@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CoverCard, type CoverCardGame } from "./CoverCard";
+import { CoverCard, type CoverCardGame } from "./index";
 
 const BASE_GAME: CoverCardGame = {
   igdbId: 1,
@@ -21,7 +21,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Grid tile used across the Library, Search, Systems, and Friends screens. Two fixed a11y bugs from an earlier pass of this audit: the clickable cover tile is a `div[role="button"]` and now gets a real `:focus-visible` ring (extended globally in `globals.css`, since the app\'s ring previously only targeted real `button` elements); and the hover-revealed quick-action buttons (change status / rate / log) are no longer keyboard-focusable while hidden — `aria-hidden`, opacity, `pointerEvents`, and `tabIndex` are now all driven by one shared condition. **Hover or Tab onto a card in the canvas** to see the quick-actions overlay and the focus ring.',
+          "Grid tile used across the Library, Search, Systems, and Friends screens. Two fixed a11y bugs from an earlier pass of this audit: the clickable cover tile is a `div[role=\"button\"]` and now gets a real `:focus-visible` ring (extended globally in `globals.css`, since the app's ring previously only targeted real `button` elements); and the hover-revealed quick-action buttons (change status / rate / log) are no longer keyboard-focusable while hidden — `aria-hidden`, opacity, `pointerEvents`, and `tabIndex` are now all driven by one shared condition. **Hover or Tab onto a card in the canvas** to see the quick-actions overlay and the focus ring.",
       },
     },
   },
@@ -45,13 +45,7 @@ type Story = StoryObj<typeof meta>;
 // ─── Interactive playground ────────────────────────────────────────────────────
 
 export const Playground: Story = {
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 // ─── Cover art vs. text fallback ────────────────────────────────────────────────
@@ -59,15 +53,9 @@ export const Playground: Story = {
 export const WithCoverArt: Story = {
   name: "With cover image",
   args: {
-    game: { ...BASE_GAME, coverUrl: "https://picsum.photos/seed/hollow-knight/300/400" },
+    game: { ...BASE_GAME, coverUrl: "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect width=%22300%22 height=%22400%22 fill=%22%233a3a3c%22/%3E%3Ctext x=%22150%22 y=%22200%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22sans-serif%22 font-size=%2220%22%3ESample cover%3C/text%3E%3C/svg%3E" },
   },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 export const TextFallback: Story = {
@@ -75,13 +63,7 @@ export const TextFallback: Story = {
   args: {
     game: { ...BASE_GAME, coverUrl: undefined, title: "Untitled Goose Game" },
   },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 // ─── Every status ────────────────────────────────────────────────────────────────
@@ -89,9 +71,7 @@ export const TextFallback: Story = {
 export const AllStatuses: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
-    <div
-      style={{ display: "grid", gridTemplateColumns: "repeat(4, 160px)", gap: "var(--space-4)" }}
-    >
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 180px))", gap: "var(--space-4)" }}>
       {(["Wishlist", "Backlog", "Playing", "Played"] as const).map((status) => (
         <CoverCard
           key={status}
@@ -107,37 +87,19 @@ export const NoStatus: Story = {
   args: {
     game: { ...BASE_GAME, status: undefined, rating: undefined, coverUrl: undefined },
   },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 // ─── Rating ─────────────────────────────────────────────────────────────────────
 
 export const Rated: Story = {
   args: { game: { ...BASE_GAME, rating: 4.5, coverUrl: undefined } },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 export const NotRated: Story = {
   args: { game: { ...BASE_GAME, rating: undefined, coverUrl: undefined } },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 // ─── Selection mode ──────────────────────────────────────────────────────────────
@@ -145,25 +107,13 @@ export const NotRated: Story = {
 export const SelectableUnselected: Story = {
   name: "Selectable (unselected)",
   args: { selectable: true, selected: false, game: { ...BASE_GAME, coverUrl: undefined } },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 export const SelectableSelected: Story = {
   name: "Selectable (selected)",
   args: { selectable: true, selected: true, game: { ...BASE_GAME, coverUrl: undefined } },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 export const SelectableGrid: Story = {
@@ -173,30 +123,9 @@ export const SelectableGrid: Story = {
     function Demo() {
       const games: CoverCardGame[] = [
         { ...BASE_GAME, igdbId: 1, title: "Hollow Knight", status: "Played", coverUrl: undefined },
-        {
-          ...BASE_GAME,
-          igdbId: 2,
-          title: "Celeste",
-          status: "Playing",
-          coverColor: "var(--apple-blue-subtle)",
-          coverUrl: undefined,
-        },
-        {
-          ...BASE_GAME,
-          igdbId: 3,
-          title: "Outer Wilds",
-          status: "Backlog",
-          coverColor: "var(--apple-orange-subtle)",
-          coverUrl: undefined,
-        },
-        {
-          ...BASE_GAME,
-          igdbId: 4,
-          title: "Disco Elysium",
-          status: "Wishlist",
-          coverColor: "var(--apple-pink-subtle)",
-          coverUrl: undefined,
-        },
+        { ...BASE_GAME, igdbId: 2, title: "Celeste", status: "Playing", coverColor: "var(--apple-blue-subtle)", coverUrl: undefined },
+        { ...BASE_GAME, igdbId: 3, title: "Outer Wilds", status: "Backlog", coverColor: "var(--apple-orange-subtle)", coverUrl: undefined },
+        { ...BASE_GAME, igdbId: 4, title: "Disco Elysium", status: "Wishlist", coverColor: "var(--apple-pink-subtle)", coverUrl: undefined },
       ];
       const [selected, setSelected] = useState<Set<number>>(new Set([2]));
       const toggle = (id: number) => {
@@ -211,13 +140,7 @@ export const SelectableGrid: Story = {
         });
       };
       return (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 160px)",
-            gap: "var(--space-4)",
-          }}
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 180px))", gap: "var(--space-4)" }}>
           {games.map((game) => (
             <CoverCard
               key={game.igdbId}
@@ -246,13 +169,7 @@ export const WithDeal: Story = {
       dealUrl: "https://www.cheapshark.com/",
     },
   },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };
 
 // ─── Completion progress ────────────────────────────────────────────────────────
@@ -262,11 +179,5 @@ export const InProgress: Story = {
   args: {
     game: { ...BASE_GAME, status: "Playing", coverUrl: undefined, completionPercentage: 62 },
   },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 200 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ width: 200 }}><Story /></div>],
 };

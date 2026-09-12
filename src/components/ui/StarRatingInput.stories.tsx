@@ -16,13 +16,7 @@ function Demo({ initial = 0, size = 26 }: DemoProps) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
       <StarRatingInput value={value} onChange={setValue} size={size} />
-      <span
-        style={{
-          color: "var(--apple-secondary-label)",
-          fontSize: "var(--font-size-base)",
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
+      <span style={{ color: "var(--apple-secondary-label)", fontSize: "var(--font-size-base)", fontVariantNumeric: "tabular-nums" }}>
         {value.toFixed(1)} / 5
       </span>
     </div>
@@ -38,7 +32,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Editable rating control — 10 half-star hit targets (`n - 1 + offset` for `n` in 1–5, `offset` in [0.5, 1]) rendered as a `role="radiogroup"` of `role="radio"` buttons. Fixed in an earlier pass of this audit: originally had no `aria-checked`/roving `tabIndex`, so a screen reader user had no way to perceive the current value and keyboard users needed 10 Tab presses to get past it. Now supports `ArrowLeft`/`ArrowRight`/`ArrowUp`/`ArrowDown` (±0.5) and `Home`/`End` (min/max), with focus following the selection. Used directly in only 2 of 41 files (`LogEditor.tsx`, `CoverCard.tsx`\'s rate popover).',
+          "Controlled half-step rating input using role=slider. Arrow keys change the value by 0.5; Home selects 0.5 and End selects 5. The unset value of 0 currently falls below aria-valuemin=0.5 and remains an implementation gap.",
       },
     },
   },
@@ -101,7 +95,7 @@ export const KeyboardNavigation: Story = {
     docs: {
       description: {
         story:
-          "Click a star to focus the control, then use ArrowLeft/ArrowRight (±0.5), Home (0.5), and End (5) — focus and `aria-checked` both follow the selection, matching standard radiogroup keyboard behavior.",
+          "Tab to the slider, then use ArrowLeft/ArrowRight (±0.5), Home (0.5), and End (5). aria-valuenow follows the controlled value.",
       },
     },
   },

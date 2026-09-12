@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { StatusChip, STATUS_COLORS } from "./StatusChip";
-import type { Status } from "../types";
+import type { Status } from "../../types";
 
 const meta = {
   title: "Components/StatusChip",
@@ -12,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          '**Real adoption correction:** the design-system audit originally scored this component 8/10, "used in 5 files." That figure conflated two different things — the `<StatusChip>` **component** has **zero** real JSX usages anywhere in the app; what\'s actually used in those 5 files is its exported `STATUS_COLORS`/`STATUS_SUBTLE` color-map constants, each consumer (`CoverCard`, `LogEditor`, `LibraryTableView`, `StatsScreen`, `GameDetailScreen`) hand-rolling its own status pill/badge markup around those colors instead of rendering this component. Also worth noting: this file also exports `COMPLETION_COLORS`/`COMPLETION_SUBTLE` for the separate `Completion` taxonomy (Completed/Mastered/Abandoned/Shelved), but `StatusChip`\'s own `label` prop only accepts `Status | "All"` — there\'s no way to render a completion chip through this component at all, which is exactly why `LibraryTableView` hand-rolls its completion badges separately.',
+          "Status filter button with selection, count and compact options. The dot color is supplied by the caller. Status and Completion are separate taxonomies: this component accepts only Status or All. The current count uses a low-contrast tertiary label; review it in both themes.",
       },
     },
   },
@@ -22,17 +22,12 @@ const meta = {
       options: ["All", "Wishlist", "Backlog", "Playing", "Played"],
     },
     active: { control: "boolean" },
-    compact: {
-      control: "boolean",
-      description:
-        "Tighter padding (3px 10px, off-scale — flagged, not tokenized) vs. default (6px var(--space-3)).",
-    },
+    compact: { control: "boolean", description: "Tighter padding (3px 10px, off-scale — flagged, not tokenized) vs. default (6px var(--space-3))." },
     hideCount: { control: "boolean" },
     count: { control: "number" },
     dotColor: {
       control: "color",
-      description:
-        "Free-form — the component does not derive this from `label` automatically. Callers pass STATUS_COLORS[status] themselves.",
+      description: "Free-form — the component does not derive this from `label` automatically. Callers pass STATUS_COLORS[status] themselves.",
     },
   },
   args: {
@@ -109,7 +104,7 @@ export const AllStatuses: Story = {
           label={status}
           dotColor={STATUS_COLORS[status]}
           active
-          count={Math.floor(Math.random() * 40) + 1}
+          count={{ Wishlist: 14, Backlog: 31, Playing: 4, Played: 33 }[status]}
           onClick={() => {}}
         />
       ))}

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ActiveFilterBadges } from "./FilterBar";
-import type { FilterSpec } from "../services/filterEngine";
-import { db } from "../db/schema";
-import type { Tag } from "../types";
+import type { FilterSpec } from "../../services/filterEngine";
+import { setDemoTags } from "../../../.storybook/tags.fixture";
+import type { Tag } from "../../types";
 
 const SAMPLE_TAGS: Tag[] = [
   { id: "tag-cozy", name: "Cozy", createdAt: Date.now(), updatedAt: Date.now() },
@@ -11,7 +11,7 @@ const SAMPLE_TAGS: Tag[] = [
 ];
 
 async function seedTags() {
-  await db.tags.bulkPut(SAMPLE_TAGS);
+  setDemoTags(SAMPLE_TAGS);
 }
 
 function Demo({ initialSpec }: { initialSpec: FilterSpec }) {
@@ -26,9 +26,10 @@ const meta = {
   parameters: {
     layout: "padded",
     docs: {
+      story: { inline: false, height: 540 },
       description: {
         component:
-          'Removable-badge row that normally sits next to `FilterBar` — one badge per active facet value (including resolved tag names, not raw IDs), plus a "Clear all" action. Renders nothing (`return null`) when no filters are active — see the Empty story.',
+          "Removable-badge row that normally sits next to `FilterBar` — one badge per active facet value (including resolved tag names, not raw IDs), plus a \"Clear all\" action. Renders nothing (`return null`) when no filters are active — see the Empty story.",
       },
     },
   },
@@ -72,8 +73,7 @@ export const Empty: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "With an empty spec, this component returns `null` — there's no empty state to show, just nothing in the layout.",
+        story: "With an empty spec, this component returns `null` — there's no empty state to show, just nothing in the layout.",
       },
     },
   },
