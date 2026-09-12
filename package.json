@@ -10,9 +10,7 @@
     "build:desktop": "vite build && electron-builder",
     "lint": "oxlint",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "preview": "vite preview",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "preview": "vite preview"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -29,9 +27,6 @@
     "react-router-dom": "^7.18.0"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.4.6",
-    "@storybook/addon-docs": "^10.4.6",
-    "@storybook/react-vite": "^10.4.6",
     "@types/express": "^5.0.6",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
@@ -41,7 +36,6 @@
     "electron-builder": "^26.15.3",
     "oxlint": "^1.69.0",
     "prettier": "^3.9.6",
-    "storybook": "^10.4.6",
     "typescript": "~6.0.2",
     "vite": "^8.1.0",
     "vite-plugin-electron": "^1.1.0",
