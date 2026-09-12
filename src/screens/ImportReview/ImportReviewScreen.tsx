@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, AlertCircle, Loader2, Clock } from "lucide-react";
-import { steamImportSource } from "../services/steamImport";
+import { steamImportSource } from "../../services/steamImport";
 import type { MatchedImportGame } from "../services/importSource";
-import { GamesRepo } from "../db/repositories/GamesRepo";
+import { GamesRepo } from "../../db/repositories/GamesRepo";
 import type { Status, Game, Log } from "../types";
-import { Button } from "../components/ui/Button";
+import { Button } from "../../components/ui/Button";
 
 export function ImportReviewScreen() {
   const navigate = useNavigate();

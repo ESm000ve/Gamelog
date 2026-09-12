@@ -15,7 +15,7 @@ import {
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../db/schema";
 import { CoverCard } from "../../components/CoverCard";
-import { Skeleton } from "../../components/Skeleton";
+import { Skeleton } from "../../components/ui/";
 import { Button } from "../../components/ui/Button";
 import { useLiveRegion } from "../../hooks/useLiveRegion";
 import type { Status, Log } from "../../types";

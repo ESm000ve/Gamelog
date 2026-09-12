@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Plus, X, Tag as TagIcon } from "lucide-react";
-import { TagsRepo } from "../db/repositories/TagsRepo";
+import { TagsRepo } from "../../db/repositories/TagsRepo";
 import type { Tag } from "../types";
-import { Button } from "./ui/Button";
+import { Button } from "./Button";
 
 interface TagSelectProps {
   value: string[]; // array of Tag IDs

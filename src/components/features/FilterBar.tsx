@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Filter, X, Check } from "lucide-react";
 import type { FilterSpec } from "../services/filterEngine";
-import { TagsRepo } from "../db/repositories/TagsRepo";
+import { TagsRepo } from "../../db/repositories/TagsRepo";
 import type { Tag, Status } from "../types";
-import { Button } from "./ui/Button";
+import { Button } from "../ui/Button";
 
 // Predefined lists for simplicity. In a real app, these might be aggregated from the library.
 const STATUSES: Status[] = ["Playing", "Backlog", "Played", "Wishlist"];

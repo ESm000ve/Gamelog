@@ -1,6 +1,6 @@
 import { Star } from "lucide-react";
-import { StarRating } from "../StarRating";
-import { STATUS_COLORS, STATUS_SUBTLE } from "../StatusChip";
+import { StarRating } from "../ui/StarRating";
+import { STATUS_COLORS, STATUS_SUBTLE } from "../ui/StatusChip";
 import type { Status } from "../../types";
 import { shortPlatform } from "../../utils/platforms";
 import { StatusIcon } from "./CoverCardIcons";

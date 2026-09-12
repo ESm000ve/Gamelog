@@ -3,14 +3,14 @@ import { Search, ChevronDown, BookOpen, Plus, Grid2x2, List, Share2 } from "luci
 import { useNavigate } from "react-router-dom";
 import { CoverCard } from "../../components/CoverCard";
 import { LibraryTableView } from "./LibraryTableView";
-import { ShareListModal } from "../../components/ShareListModal";
+import { ShareListModal } from "../../components/features/";
 import { useLibrary, useLibraryCounts, type SortKey } from "../../hooks/useLibrary";
 import { useLiveRegion } from "../../hooks/useLiveRegion";
 import { LogsRepo } from "../../db/repositories";
-import { FilterBar, ActiveFilterBadges } from "../../components/FilterBar";
+import { FilterBar, ActiveFilterBadges } from "../../components/features/";
 import type { FilterSpec } from "../../services/filterEngine";
 import { fetchDealsForWishlist } from "../../services/priceTracker";
-import { SpotlightBanner } from "../../components/SpotlightBanner";
+import { SpotlightBanner } from "../../components/features/";
 import { Button } from "../../components/ui/Button";
 import type { Status } from "../../types";
 import "./LibraryScreen.css";

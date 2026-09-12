@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../db/schema";
-import { STATUS_COLORS } from "../../components/StatusChip";
+import { STATUS_COLORS } from "../../components/ui/";
 import { Button } from "../../components/ui/Button";
 import { VerticalBarChart, HorizontalBarChart, KPICard } from "./Charts";
 import {

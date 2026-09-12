@@ -1,6 +1,6 @@
 import { LayoutList, BarChart3, Gamepad2 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/Button";
+import { Button } from "../../components/ui/Button";
 
 export function ListsScreen() {
   return (

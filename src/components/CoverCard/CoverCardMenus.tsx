@@ -1,5 +1,5 @@
-import { StarRatingInput } from "../StarRating";
-import { STATUS_COLORS } from "../StatusChip";
+import { StarRatingInput } from "../ui/StarRating";
+import { STATUS_COLORS } from "../ui/StatusChip";
 import type { Status } from "../../types";
 import "./CoverCardParts.css";
 

@@ -1,7 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db";
 import type { DerivedStats, Game, Log } from "../types";
-import { STATUS_COLORS } from "../components/StatusChip";
+import { STATUS_COLORS } from "../components/ui/";
 
 type TimeRange = "all" | "year" | "last12";
 

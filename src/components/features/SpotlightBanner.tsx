@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getSpotlight, type SpotlightData } from "../services/spotlight";
+import { getSpotlight, type SpotlightData } from "../../services/spotlight";
 import "./SpotlightBanner.css";
 
 export function SpotlightBanner() {

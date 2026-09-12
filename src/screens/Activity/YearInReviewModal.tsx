@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
-import { StarRating } from "../../components/StarRating";
+import { StarRating } from "../../components/ui/";
 
 interface YearInReviewModalProps {
   onClose: () => void;

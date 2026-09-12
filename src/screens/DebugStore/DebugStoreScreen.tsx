@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { GamesRepo, LogsRepo, ListsRepo } from "../db/repositories";
-import { catalog } from "../catalog";
-import { Button } from "../components/ui/Button";
+import { GamesRepo, LogsRepo, ListsRepo } from "../../db/repositories";
+import { catalog } from "../../catalog";
+import { Button } from "../../components/ui/Button";
 
 export function DebugStoreScreen() {
   const [logs, setLogs] = useState<string[]>([]);
@@ -21,7 +21,7 @@ export function DebugStoreScreen() {
     setLogs([]);
     try {
       appendLog("1. Initializing and clearing database for test...");
-      const { db } = await import("../db/schema");
+      const { db } = await import("../../db/schema");
       await db.games.clear();
       await db.logs.clear();
       await db.lists.clear();

@@ -10,16 +10,16 @@ import {
   Loader2,
   X,
 } from "lucide-react";
-import type { Game, Log } from "../types";
+import type { Game, Log } from "../../types";
 import {
   generateMarkdownList,
   generateShareCardCanvas,
   downloadCanvasImage,
   copyCanvasImageToClipboard,
-} from "../services/listShare";
-import { downloadCalendarICS } from "../services/calendarSync";
-import { Button } from "./ui/Button";
-import { Modal } from "./ui/Modal";
+} from "../../services/listShare";
+import { downloadCalendarICS } from "../../services/calendarSync";
+import { Button } from "../ui/Button";
+import { Modal } from "../ui/Modal";
 
 interface ShareListModalProps {
   isOpen: boolean;

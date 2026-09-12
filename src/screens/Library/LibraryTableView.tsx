@@ -7,9 +7,9 @@ import {
   STATUS_SUBTLE,
   COMPLETION_COLORS,
   COMPLETION_SUBTLE,
-} from "../../components/StatusChip";
+} from "../../components/ui/";
 import { Button } from "../../components/ui/Button";
-import { StarRating } from "../../components/StarRating";
+import { StarRating } from "../../components/ui/";
 
 interface LibraryTableViewProps {
   entries: { game: Game; log?: Log }[];

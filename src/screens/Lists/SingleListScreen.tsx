@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { db } from "../../db/schema";
 import { ListsRepo } from "../../db/repositories/ListsRepo";
-import { ShareListModal } from "../../components/ShareListModal";
+import { ShareListModal } from "../../components/features/";
 import { Button } from "../../components/ui/Button";
 import type { Game } from "../../types";
 

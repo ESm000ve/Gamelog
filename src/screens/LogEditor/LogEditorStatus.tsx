@@ -1,5 +1,5 @@
-import { STATUS_COLORS } from "../../components/StatusChip";
-import { StarRatingInput, StarRating } from "../../components/StarRating";
+import { STATUS_COLORS } from "../../components/ui/";
+import { StarRatingInput, StarRating } from "../../components/ui/";
 import { Button } from "../../components/ui/Button";
 import type { Status, Completion } from "../../types";
 import { Field, PillButton } from "./LogEditorUI";

@@ -15,7 +15,7 @@ import {
   Gamepad2,
 } from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../db/schema";
+import { db } from "../../db/schema";
 
 interface CommandItem {
   id: string;

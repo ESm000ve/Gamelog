@@ -1,4 +1,4 @@
-import { TagSelect } from "../../components/TagSelect";
+import { TagSelect } from "../../components/ui/";
 import type { Game, Ownership } from "../../types";
 import { Field, PillButton } from "./LogEditorUI";
 
