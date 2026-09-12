@@ -19,17 +19,17 @@ import type { Game, TimeToBeat, IgdbSearchResult } from "../types";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface IgdbGame {
-  igdbId:      number;
-  title:       string;
-  slug:        string;
-  developer:   string;
-  publisher?:  string;
+  igdbId: number;
+  title: string;
+  slug: string;
+  developer: string;
+  publisher?: string;
   releaseYear: number;
   firstReleaseDate?: number;
-  summary?:    string;
-  genres:      string[];
-  platforms:   string[];
-  coverUrl?:   string;
+  summary?: string;
+  genres: string[];
+  platforms: string[];
+  coverUrl?: string;
   timeToBeat?: TimeToBeat;
   igdbRating?: number;
 }
@@ -120,9 +120,7 @@ export async function searchGames(query: string): Promise<IgdbGame[]> {
   await new Promise((r) => setTimeout(r, 200)); // simulate latency
   const q = query.toLowerCase();
   return STUB_RESULTS.filter(
-    (g) =>
-      g.title.toLowerCase().includes(q) ||
-      g.developer.toLowerCase().includes(q)
+    (g) => g.title.toLowerCase().includes(q) || g.developer.toLowerCase().includes(q)
   ).slice(0, 8);
 }
 
@@ -139,27 +137,24 @@ export async function getGame(igdbId: number): Promise<IgdbGame | null> {
  * Used when the real API is connected.
  */
 export function normaliseIgdbResult(raw: IgdbSearchResult): IgdbGame {
-  const developer =
-    raw.involved_companies?.find((ic) => ic.developer)?.company.name ??
-    "Unknown";
-  const publisher =
-    raw.involved_companies?.find((ic) => ic.publisher)?.company.name;
+  const developer = raw.involved_companies?.find((ic) => ic.developer)?.company.name ?? "Unknown";
+  const publisher = raw.involved_companies?.find((ic) => ic.publisher)?.company.name;
   const releaseYear = raw.first_release_date
     ? new Date(raw.first_release_date * 1000).getFullYear()
     : 0;
 
   return {
-    igdbId:      raw.id,
-    title:       raw.name,
-    slug:        raw.slug,
+    igdbId: raw.id,
+    title: raw.name,
+    slug: raw.slug,
     developer,
     publisher,
     releaseYear,
     firstReleaseDate: raw.first_release_date,
-    summary:     raw.summary,
-    genres:      raw.genres?.map((g) => g.name) ?? [],
-    platforms:   raw.platforms?.map((p) => p.name) ?? [],
-    coverUrl:    raw.cover ? igdbCoverUrl(raw.cover.image_id) : undefined,
+    summary: raw.summary,
+    genres: raw.genres?.map((g) => g.name) ?? [],
+    platforms: raw.platforms?.map((p) => p.name) ?? [],
+    coverUrl: raw.cover ? igdbCoverUrl(raw.cover.image_id) : undefined,
   };
 }
 
@@ -168,16 +163,16 @@ export function normaliseIgdbResult(raw: IgdbSearchResult): IgdbGame {
  */
 export function igdbGameToGame(igdb: IgdbGame): Omit<Game, "addedAt" | "updatedAt"> {
   return {
-    igdbId:      igdb.igdbId,
-    title:       igdb.title,
-    slug:        igdb.slug,
-    developer:   igdb.developer,
-    publisher:   igdb.publisher,
+    igdbId: igdb.igdbId,
+    title: igdb.title,
+    slug: igdb.slug,
+    developer: igdb.developer,
+    publisher: igdb.publisher,
     releaseYear: igdb.releaseYear,
-    summary:     igdb.summary,
-    genres:      igdb.genres,
-    platforms:   igdb.platforms,
-    coverUrl:    igdb.coverUrl,
-    igdbRating:  igdb.igdbRating,
+    summary: igdb.summary,
+    genres: igdb.genres,
+    platforms: igdb.platforms,
+    coverUrl: igdb.coverUrl,
+    igdbRating: igdb.igdbRating,
   };
 }

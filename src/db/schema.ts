@@ -22,10 +22,10 @@ import Dexie, { type Table } from "dexie";
 import type { Game, Log, UserList, Tag } from "../types";
 
 export class GamelogDB extends Dexie {
-  games!: Table<Game,     number>; // primary key: igdbId (number)
-  logs!:  Table<Log,      number>; // primary key: igdbId (number)
+  games!: Table<Game, number>; // primary key: igdbId (number)
+  logs!: Table<Log, number>; // primary key: igdbId (number)
   lists!: Table<UserList, string>; // primary key: id (UUID string)
-  tags!:  Table<Tag,      string>; // primary key: id (UUID string)
+  tags!: Table<Tag, string>; // primary key: id (UUID string)
 
   constructor() {
     super("gamelog");
@@ -34,23 +34,23 @@ export class GamelogDB extends Dexie {
     // Initial schema: games catalog cache, personal logs, and user lists.
     this.version(1).stores({
       games: [
-        "igdbId",          // PK — IGDB integer ID
-        "title",           // for title-sort queries
-        "releaseYear",     // for year-sort queries
-        "addedAt",         // for recently-added sort (default)
-        "updatedAt",       // for change-tracking
+        "igdbId", // PK — IGDB integer ID
+        "title", // for title-sort queries
+        "releaseYear", // for year-sort queries
+        "addedAt", // for recently-added sort (default)
+        "updatedAt", // for change-tracking
       ].join(", "),
 
       logs: [
-        "igdbId",          // PK — FK → games.igdbId
-        "status",          // for status-filter queries
-        "finishedAt",      // for "played this year" stats
+        "igdbId", // PK — FK → games.igdbId
+        "status", // for status-filter queries
+        "finishedAt", // for "played this year" stats
         "updatedAt",
       ].join(", "),
 
       lists: [
-        "id",              // PK — UUID
-        "name",            // for name-sort queries
+        "id", // PK — UUID
+        "name", // for name-sort queries
         "createdAt",
         "updatedAt",
       ].join(", "),
@@ -58,30 +58,40 @@ export class GamelogDB extends Dexie {
 
     // ── v2 ──────────────────────────────────────────────────────────────────
     // Added tags table and *tagIds to logs
-    this.version(2).stores({
-      games: "igdbId, title, releaseYear, addedAt, updatedAt",
-      logs:  "igdbId, status, finishedAt, updatedAt, *tagIds",
-      lists: "id, name, createdAt, updatedAt",
-      tags:  "id, name, createdAt, updatedAt"
-    }).upgrade(async tx => {
-      // Ensure existing logs have tagIds initialized
-      await tx.table("logs").toCollection().modify(log => {
-        if (!log.tagIds) log.tagIds = [];
+    this.version(2)
+      .stores({
+        games: "igdbId, title, releaseYear, addedAt, updatedAt",
+        logs: "igdbId, status, finishedAt, updatedAt, *tagIds",
+        lists: "id, name, createdAt, updatedAt",
+        tags: "id, name, createdAt, updatedAt",
+      })
+      .upgrade(async (tx) => {
+        // Ensure existing logs have tagIds initialized
+        await tx
+          .table("logs")
+          .toCollection()
+          .modify((log) => {
+            if (!log.tagIds) log.tagIds = [];
+          });
       });
-    });
 
     // ── v3 ──────────────────────────────────────────────────────────────────
     // Added playSessions to logs, deal price fields to games
-    this.version(3).stores({
-      games: "igdbId, title, releaseYear, addedAt, updatedAt",
-      logs:  "igdbId, status, finishedAt, updatedAt, *tagIds",
-      lists: "id, name, createdAt, updatedAt",
-      tags:  "id, name, createdAt, updatedAt"
-    }).upgrade(async tx => {
-      await tx.table("logs").toCollection().modify(log => {
-        if (!log.playSessions) log.playSessions = [];
+    this.version(3)
+      .stores({
+        games: "igdbId, title, releaseYear, addedAt, updatedAt",
+        logs: "igdbId, status, finishedAt, updatedAt, *tagIds",
+        lists: "id, name, createdAt, updatedAt",
+        tags: "id, name, createdAt, updatedAt",
+      })
+      .upgrade(async (tx) => {
+        await tx
+          .table("logs")
+          .toCollection()
+          .modify((log) => {
+            if (!log.playSessions) log.playSessions = [];
+          });
       });
-    });
   }
 }
 

@@ -29,7 +29,7 @@ export const GamesRepo = {
     // Fire off embedding generation in background so UI isn't blocked
     setTimeout(async () => {
       try {
-        const text = `${game.title}\nGenres: ${game.genres.join(', ')}\n${game.summary || ''}`;
+        const text = `${game.title}\nGenres: ${game.genres.join(", ")}\n${game.summary || ""}`;
         const embedding = await embed(text);
         await db.games.update(game.igdbId, { embedding });
       } catch (err) {
@@ -38,7 +38,7 @@ export const GamesRepo = {
     }, 50);
   },
 
-  /** 
+  /**
    * Idempotently bulk imports games and logs.
    * If a log exists, its status is preserved.
    * Playtime is merged based on `overwritePlaytime`.
@@ -69,7 +69,11 @@ export const GamesRepo = {
           const updatedLog = { ...existingLog, updatedAt: Date.now() };
           // Merge playtime
           if (log.timePlayed !== undefined && log.timePlayed > 0) {
-            if (overwritePlaytime || existingLog.timePlayed === undefined || existingLog.timePlayed === 0) {
+            if (
+              overwritePlaytime ||
+              existingLog.timePlayed === undefined ||
+              existingLog.timePlayed === 0
+            ) {
               updatedLog.timePlayed = log.timePlayed;
             }
           }
@@ -84,11 +88,11 @@ export const GamesRepo = {
     await db.transaction("rw", [db.games, db.logs, db.lists], async () => {
       await db.games.delete(igdbId);
       await db.logs.delete(igdbId);
-      
-      const listsWithGame = await db.lists.filter(l => l.gameIds.includes(igdbId)).toArray();
+
+      const listsWithGame = await db.lists.filter((l) => l.gameIds.includes(igdbId)).toArray();
       if (listsWithGame.length > 0) {
         for (const list of listsWithGame) {
-          list.gameIds = list.gameIds.filter(id => id !== igdbId);
+          list.gameIds = list.gameIds.filter((id) => id !== igdbId);
           list.updatedAt = Date.now();
           await db.lists.put(list);
         }
@@ -107,10 +111,10 @@ export const GamesRepo = {
 
   /** Backfills missing embeddings in the background */
   async backfillEmbeddings(): Promise<void> {
-    const missing = await db.games.filter(g => !g.embedding).toArray();
+    const missing = await db.games.filter((g) => !g.embedding).toArray();
     for (const game of missing) {
       try {
-        const text = `${game.title}\nGenres: ${game.genres.join(', ')}\n${game.summary || ''}`;
+        const text = `${game.title}\nGenres: ${game.genres.join(", ")}\n${game.summary || ""}`;
         const embedding = await embed(text);
         await db.games.update(game.igdbId, { embedding });
       } catch (err) {
@@ -121,25 +125,25 @@ export const GamesRepo = {
   },
 
   async backfillReleaseDates(): Promise<void> {
-    const missing = await db.games.filter(g => !g.firstReleaseDate).toArray();
+    const missing = await db.games.filter((g) => !g.firstReleaseDate).toArray();
     if (missing.length === 0) return;
-    
+
     for (let i = 0; i < missing.length; i += 100) {
       const chunk = missing.slice(i, i + 100);
-      const ids = chunk.map(g => g.igdbId).join(',');
+      const ids = chunk.map((g) => g.igdbId).join(",");
       try {
         const res = await fetch(`/api/igdb/bulk-fetch?ids=${ids}`);
         if (!res.ok) continue;
         const data = await res.json();
-        
+
         for (const igdbGame of data) {
           if (igdbGame.first_release_date) {
             await db.games.update(igdbGame.id, { firstReleaseDate: igdbGame.first_release_date });
           }
         }
       } catch (err) {
-        console.warn('Failed to backfill release dates:', err);
+        console.warn("Failed to backfill release dates:", err);
       }
     }
-  }
+  },
 };

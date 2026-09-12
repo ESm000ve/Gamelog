@@ -9,6 +9,7 @@
     "build": "vite build && electron-builder",
     "build:desktop": "vite build && electron-builder",
     "lint": "oxlint",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -39,6 +40,7 @@
     "electron": "^43.0.0",
     "electron-builder": "^26.15.3",
     "oxlint": "^1.69.0",
+    "prettier": "^3.9.6",
     "storybook": "^10.4.6",
     "typescript": "~6.0.2",
     "vite": "^8.1.0",

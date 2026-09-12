@@ -8,13 +8,29 @@ export interface VerticalBarProps {
   height?: number;
 }
 
-export function VerticalBarChart({ data, color = "var(--apple-yellow)", height = 150 }: VerticalBarProps) {
+export function VerticalBarChart({
+  data,
+  color = "var(--apple-yellow)",
+  height = 150,
+}: VerticalBarProps) {
   const maxVal = Math.max(...data.map((d) => d.value), 1); // Avoid div by 0
 
   return (
     <figure style={{ margin: 0 }}>
       {/* Visually hidden data table for screen readers */}
-      <table style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0 }}>
+      <table
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: "hidden",
+          clip: "rect(0, 0, 0, 0)",
+          whiteSpace: "nowrap",
+          border: 0,
+        }}
+      >
         <caption>Rating Distribution</caption>
         <tbody>
           {data.map((item, idx) => (
@@ -27,17 +43,36 @@ export function VerticalBarChart({ data, color = "var(--apple-yellow)", height =
       </table>
 
       {/* Visual chart (hidden from SR) */}
-      <div aria-hidden="true" style={{ display: "flex", alignItems: "flex-end", height, gap: 4, width: "100%" }}>
+      <div
+        aria-hidden="true"
+        style={{ display: "flex", alignItems: "flex-end", height, gap: 4, width: "100%" }}
+      >
         {data.map((item, idx) => {
           const pct = (item.value / maxVal) * 100;
           return (
             <div
               key={idx}
-              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 6,
+              }}
               title={`${item.label} stars: ${item.value} games`}
             >
               {/* Bar container */}
-              <div style={{ flex: 1, width: "100%", display: "flex", alignItems: "flex-end", background: "rgba(0,0,0,0.05)", borderRadius: "var(--radius-sm)", overflow: "hidden" }}>
+              <div
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "flex-end",
+                  background: "rgba(0,0,0,0.05)",
+                  borderRadius: "var(--radius-sm)",
+                  overflow: "hidden",
+                }}
+              >
                 <div
                   style={{
                     width: "100%",
@@ -50,7 +85,13 @@ export function VerticalBarChart({ data, color = "var(--apple-yellow)", height =
                 />
               </div>
               {/* Label */}
-              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--apple-tertiary-label)", fontWeight: 500 }}>
+              <span
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--apple-tertiary-label)",
+                  fontWeight: 500,
+                }}
+              >
                 {item.label}
               </span>
             </div>
@@ -80,7 +121,9 @@ export function HorizontalBarChart({ data, color = "var(--apple-accent)" }: Hori
   if (data.length === 0) {
     return (
       <div style={{ padding: "var(--space-5) 0", textAlign: "center" }}>
-        <p style={{ color: "var(--apple-tertiary-label)", fontSize: "var(--font-size-base)"}}>No data in this period.</p>
+        <p style={{ color: "var(--apple-tertiary-label)", fontSize: "var(--font-size-base)" }}>
+          No data in this period.
+        </p>
       </div>
     );
   }
@@ -88,7 +131,19 @@ export function HorizontalBarChart({ data, color = "var(--apple-accent)" }: Hori
   return (
     <figure style={{ margin: 0 }}>
       {/* Visually hidden data table for screen readers */}
-      <table style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0 }}>
+      <table
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: "hidden",
+          clip: "rect(0, 0, 0, 0)",
+          whiteSpace: "nowrap",
+          border: 0,
+        }}
+      >
         <caption>Chart Data</caption>
         <tbody>
           {data.map((item, idx) => (
@@ -105,7 +160,7 @@ export function HorizontalBarChart({ data, color = "var(--apple-accent)" }: Hori
         {data.map((item, idx) => {
           const pct = (item.value / maxVal) * 100;
           const barColor = item.color || color;
-          
+
           return (
             <div
               key={idx}
@@ -113,13 +168,32 @@ export function HorizontalBarChart({ data, color = "var(--apple-accent)" }: Hori
               title={`${item.label}: ${item.value}`}
             >
               <div style={{ flexShrink: 0, width: 80, textAlign: "right" }}>
-                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: 500, color: "var(--apple-secondary-label)", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <span
+                  style={{
+                    fontSize: "var(--font-size-sm)",
+                    fontWeight: 500,
+                    color: "var(--apple-secondary-label)",
+                    display: "block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {item.label}
                 </span>
               </div>
-              
-              <div style={{ flex: 1, height: 24, background: "rgba(0,0,0,0.05)", borderRadius: "var(--radius-sm)", overflow: "hidden", position: "relative" }}>
-                 <div
+
+              <div
+                style={{
+                  flex: 1,
+                  height: 24,
+                  background: "rgba(0,0,0,0.05)",
+                  borderRadius: "var(--radius-sm)",
+                  overflow: "hidden",
+                  position: "relative",
+                }}
+              >
+                <div
                   style={{
                     height: "100%",
                     width: `${pct}%`,
@@ -130,9 +204,15 @@ export function HorizontalBarChart({ data, color = "var(--apple-accent)" }: Hori
                   }}
                 />
               </div>
-              
+
               <div style={{ flexShrink: 0, width: 30, textAlign: "left" }}>
-                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: 600, color: "var(--apple-label)" }}>
+                <span
+                  style={{
+                    fontSize: "var(--font-size-sm)",
+                    fontWeight: 600,
+                    color: "var(--apple-label)",
+                  }}
+                >
                   {item.value}
                 </span>
               </div>
@@ -146,7 +226,15 @@ export function HorizontalBarChart({ data, color = "var(--apple-accent)" }: Hori
 
 // ─── KPI Card ─────────────────────────────────────────────────────────────────
 
-export function KPICard({ label, value, icon }: { label: string; value: string | number; icon?: ReactNode }) {
+export function KPICard({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string | number;
+  icon?: ReactNode;
+}) {
   return (
     <div
       style={{
@@ -161,12 +249,27 @@ export function KPICard({ label, value, icon }: { label: string; value: string |
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        {icon && <span aria-hidden="true" style={{ color: "var(--apple-tertiary-label)", display: "flex" }}>{icon}</span>}
+        {icon && (
+          <span
+            aria-hidden="true"
+            style={{ color: "var(--apple-tertiary-label)", display: "flex" }}
+          >
+            {icon}
+          </span>
+        )}
         <span style={{ fontSize: 11, fontWeight: 400, color: "var(--apple-tertiary-label)" }}>
           {label}
         </span>
       </div>
-      <span style={{ fontFamily: "var(--apple-font-display)", fontSize: 24, fontWeight: 700, color: "var(--apple-label)", letterSpacing: "-0.02em" }}>
+      <span
+        style={{
+          fontFamily: "var(--apple-font-display)",
+          fontSize: 24,
+          fontWeight: 700,
+          color: "var(--apple-label)",
+          letterSpacing: "-0.02em",
+        }}
+      >
         {value}
       </span>
     </div>

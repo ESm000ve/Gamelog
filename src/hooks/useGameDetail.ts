@@ -4,19 +4,21 @@ import { normalizeDetail } from "../types/gameDetail";
 import { getGame } from "../services/igdb";
 
 interface UseGameDetailResult {
-  detail:  GameDetail | null;
+  detail: GameDetail | null;
   loading: boolean;
-  error:   string | null;
-  retry:   () => void;
+  error: string | null;
+  retry: () => void;
 }
 
 // Simple in-memory cache keyed by igdbId
 const cache = new Map<number, GameDetail>();
 
 export function useGameDetail(igdbId: number | null): UseGameDetailResult {
-  const [detail,  setDetail]  = useState<GameDetail | null>(igdbId ? (cache.get(igdbId) ?? null) : null);
+  const [detail, setDetail] = useState<GameDetail | null>(
+    igdbId ? (cache.get(igdbId) ?? null) : null
+  );
   const [loading, setLoading] = useState(igdbId !== null && !cache.has(igdbId ?? -1));
-  const [error,   setError]   = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchDetail = useCallback(() => {
     if (igdbId === null) return;
@@ -49,7 +51,7 @@ export function useGameDetail(igdbId: number | null): UseGameDetailResult {
         if (err.name === "AbortError") return; // Unmounted
 
         console.warn("IGDB detail fetch failed, falling back to local stub:", err);
-        getGame(igdbId).then(stub => {
+        getGame(igdbId).then((stub) => {
           if (stub) {
             const companies = [
               { name: stub.developer, roles: ["Developer"] },
@@ -86,7 +88,15 @@ export function useGameDetail(igdbId: number | null): UseGameDetailResult {
               websites: [],
               languages: [],
               timeToBeat: stub.timeToBeat ?? null,
-              related: { related: [], dlcs: [], expansions: [], ports: [], series: [], mods: [], bundles: [] }
+              related: {
+                related: [],
+                dlcs: [],
+                expansions: [],
+                ports: [],
+                series: [],
+                mods: [],
+                bundles: [],
+              },
             };
             cache.set(igdbId, fallback);
             setDetail(fallback);
@@ -97,7 +107,10 @@ export function useGameDetail(igdbId: number | null): UseGameDetailResult {
         });
       });
 
-    return () => { clearTimeout(timeout); controller.abort(); };
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
   }, [igdbId]);
 
   useEffect(() => {

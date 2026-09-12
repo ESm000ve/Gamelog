@@ -21,7 +21,7 @@ export function useSimilarLibraryGames(detail: GameDetail | null) {
       }
       // Otherwise, generate it
       try {
-        const text = `${detail!.title}\nGenres: ${detail!.genres.join(', ')}\n${detail!.summary || ''}`;
+        const text = `${detail!.title}\nGenres: ${detail!.genres.join(", ")}\n${detail!.summary || ""}`;
         const emb = await embed(text);
         if (isActive) setTargetEmbedding(emb);
       } catch (err) {
@@ -30,32 +30,41 @@ export function useSimilarLibraryGames(detail: GameDetail | null) {
     }
     getEmbed();
 
-    return () => { isActive = false; };
+    return () => {
+      isActive = false;
+    };
   }, [detail]);
 
   // Compare against library
   const similarGames = useLiveQuery(async () => {
     if (!detail || !targetEmbedding) return [];
-    
+
     const allGames = await db.games.toArray();
-    
+
     const scored = allGames
-      .filter(g => g.igdbId !== detail.igdbId && g.embedding)
-      .map(g => ({
+      .filter((g) => g.igdbId !== detail.igdbId && g.embedding)
+      .map((g) => ({
         game: g,
-        score: cosineSimilarity(targetEmbedding, g.embedding!)
+        score: cosineSimilarity(targetEmbedding, g.embedding!),
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 10); // top 10
 
     // Format as RelatedGameSlim for the RelatedStrip
-    return scored.map(s => ({
-      id: s.game.igdbId,
-      name: s.game.title,
-      slug: s.game.slug,
-      cover: s.game.coverUrl ? { image_id: s.game.coverUrl.split('/').pop()?.replace('.jpg', '') || '' } : undefined,
-      first_release_date: s.game.releaseYear ? new Date(`${s.game.releaseYear}-01-01`).getTime() / 1000 : undefined,
-    } as RelatedGameSlim));
+    return scored.map(
+      (s) =>
+        ({
+          id: s.game.igdbId,
+          name: s.game.title,
+          slug: s.game.slug,
+          cover: s.game.coverUrl
+            ? { image_id: s.game.coverUrl.split("/").pop()?.replace(".jpg", "") || "" }
+            : undefined,
+          first_release_date: s.game.releaseYear
+            ? new Date(`${s.game.releaseYear}-01-01`).getTime() / 1000
+            : undefined,
+        }) as RelatedGameSlim
+    );
   }, [detail, targetEmbedding]);
 
   return similarGames ?? [];

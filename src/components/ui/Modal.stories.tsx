@@ -44,7 +44,14 @@ const Footer = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Body = ({ children }: { children: React.ReactNode }) => (
-  <div style={{ padding: "var(--space-5)", color: "var(--apple-secondary-label)", fontSize: "var(--font-size-base)", lineHeight: 1.5 }}>
+  <div
+    style={{
+      padding: "var(--space-5)",
+      color: "var(--apple-secondary-label)",
+      fontSize: "var(--font-size-base)",
+      lineHeight: 1.5,
+    }}
+  >
     {children}
   </div>
 );
@@ -82,9 +89,8 @@ export const WithTitle: Story = {
   render: () => (
     <ModalDemo title="Edit Details" width={470}>
       <Body>
-        This is the default configuration: a <code>title</code> renders the built-in header,
-        an <code>aria-labelledby</code> pointing at it, and the circular close button in the
-        top right.
+        This is the default configuration: a <code>title</code> renders the built-in header, an{" "}
+        <code>aria-labelledby</code> pointing at it, and the circular close button in the top right.
       </Body>
       <Footer>
         <Button variant="secondary">Cancel</Button>
@@ -126,10 +132,17 @@ export const WithoutTitle: Story = {
             flexShrink: 0,
           }}
         />
-        <div style={{ flex: 1, fontWeight: 700, color: "var(--apple-label)", fontSize: "var(--font-size-lg)" }}>
+        <div
+          style={{
+            flex: 1,
+            fontWeight: 700,
+            color: "var(--apple-label)",
+            fontSize: "var(--font-size-lg)",
+          }}
+        >
           Hollow Knight
         </div>
-        <button
+        <Button
           aria-label="Close"
           style={{
             display: "flex",
@@ -145,9 +158,11 @@ export const WithoutTitle: Story = {
           }}
         >
           <X size={16} />
-        </button>
+        </Button>
       </div>
-      <Body>Custom header built entirely in `children`, exactly like the real `LogEditor` modal.</Body>
+      <Body>
+        Custom header built entirely in `children`, exactly like the real `LogEditor` modal.
+      </Body>
     </ModalDemo>
   ),
 };
@@ -172,8 +187,8 @@ export const Wide: Story = {
   render: () => (
     <ModalDemo title="Import Settings" width={640}>
       <Body>
-        Wider content area for forms or data with more horizontal room to breathe — width is a
-        plain number/string prop, not a size-preset system, so any value works.
+        Wider content area for forms or data with more horizontal room to breathe — width is a plain
+        number/string prop, not a size-preset system, so any value works.
       </Body>
       <Footer>
         <Button variant="secondary">Cancel</Button>
@@ -200,8 +215,8 @@ export const LongContent: Story = {
       <Body>
         {Array.from({ length: 12 }).map((_, i) => (
           <p key={i} style={{ marginBottom: "var(--space-3)" }}>
-            Version 1.{12 - i}.0 — Added backlog roulette, fixed a crash when importing large
-            Steam libraries, and rebalanced the year-in-review persona scoring.
+            Version 1.{12 - i}.0 — Added backlog roulette, fixed a crash when importing large Steam
+            libraries, and rebalanced the year-in-review persona scoring.
           </p>
         ))}
       </Body>
@@ -216,7 +231,7 @@ export const Closed: Story = {
     docs: {
       description: {
         story:
-          "`Modal` renders `null` entirely while `isOpen` is `false` — there's no hidden/collapsed DOM to inspect, just nothing. Click \"Open modal\" to mount it.",
+          '`Modal` renders `null` entirely while `isOpen` is `false` — there\'s no hidden/collapsed DOM to inspect, just nothing. Click "Open modal" to mount it.',
       },
     },
   },

@@ -70,25 +70,18 @@ function deriveStats(logs: Log[], games: Game[]): DerivedStats {
  */
 export function useStats(range: TimeRange = "all"): DerivedStats | undefined {
   return useLiveQuery(async () => {
-    const [logs, games] = await Promise.all([
-      db.logs.toArray(),
-      db.games.toArray(),
-    ]);
+    const [logs, games] = await Promise.all([db.logs.toArray(), db.games.toArray()]);
 
     // Filter logs by time range
     let filteredLogs = logs;
     if (range === "year") {
       const year = new Date().getFullYear().toString();
-      filteredLogs = logs.filter(
-        (l) => l.finishedAt?.startsWith(year)
-      );
+      filteredLogs = logs.filter((l) => l.finishedAt?.startsWith(year));
     } else if (range === "last12") {
       const cutoff = new Date();
       cutoff.setFullYear(cutoff.getFullYear() - 1);
       const cutoffStr = cutoff.toISOString().slice(0, 10);
-      filteredLogs = logs.filter(
-        (l) => l.finishedAt && l.finishedAt >= cutoffStr
-      );
+      filteredLogs = logs.filter((l) => l.finishedAt && l.finishedAt >= cutoffStr);
     }
 
     return deriveStats(filteredLogs, games);

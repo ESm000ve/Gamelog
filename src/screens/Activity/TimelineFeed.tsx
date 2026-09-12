@@ -48,7 +48,7 @@ export function TimelineFeed({ games, logs, selectedDate, onOpenGame }: Timeline
           title: "Completed Game",
           description: log.completion || "Finished the main journey",
           dateStr: log.finishedAt,
-          timestamp: !isNaN(ts) ? ts : (log.updatedAt || Date.now()),
+          timestamp: !isNaN(ts) ? ts : log.updatedAt || Date.now(),
           game,
           log,
         });
@@ -64,7 +64,7 @@ export function TimelineFeed({ games, logs, selectedDate, onOpenGame }: Timeline
           title: "Started Playing",
           description: "Embarked on a new playthrough",
           dateStr: log.startedAt,
-          timestamp: !isNaN(ts) ? ts : (log.createdAt || Date.now()),
+          timestamp: !isNaN(ts) ? ts : log.createdAt || Date.now(),
           game,
           log,
         });
@@ -80,7 +80,9 @@ export function TimelineFeed({ games, logs, selectedDate, onOpenGame }: Timeline
               id: `${log.igdbId}-session-${s.date}-${idx}`,
               type: "session",
               title: "Gameplay Session",
-              description: s.durationMinutes ? `Logged ${Math.round(s.durationMinutes)} mins of playtime` : "Logged active gameplay",
+              description: s.durationMinutes
+                ? `Logged ${Math.round(s.durationMinutes)} mins of playtime`
+                : "Logged active gameplay",
               dateStr: s.date,
               timestamp: !isNaN(ts) ? ts : Date.now(),
               game,
@@ -143,7 +145,11 @@ export function TimelineFeed({ games, logs, selectedDate, onOpenGame }: Timeline
         return { Icon: Clock, color: "var(--apple-purple)", bg: "rgba(191, 90, 242, 0.15)" };
       case "added":
       default:
-        return { Icon: PlusCircle, color: "var(--apple-secondary-label)", bg: "var(--apple-tertiary-bg)" };
+        return {
+          Icon: PlusCircle,
+          color: "var(--apple-secondary-label)",
+          bg: "var(--apple-tertiary-bg)",
+        };
     }
   };
 
@@ -165,12 +171,16 @@ export function TimelineFeed({ games, logs, selectedDate, onOpenGame }: Timeline
           color: "var(--apple-secondary-label)",
         }}
       >
-        <Calendar size={32} style={{ opacity: 0.4, marginBottom: "var(--space-3)"}} />
-        <div style={{ fontSize: "var(--font-size-lg)", fontWeight: 600, color: "var(--apple-label)" }}>
+        <Calendar size={32} style={{ opacity: 0.4, marginBottom: "var(--space-3)" }} />
+        <div
+          style={{ fontSize: "var(--font-size-lg)", fontWeight: 600, color: "var(--apple-label)" }}
+        >
           {selectedDate ? `No activity logged on ${selectedDate}` : "No play journal events yet"}
         </div>
-        <div style={{ fontSize: "var(--font-size-base)", marginTop: "var(--space-1)"}}>
-          {selectedDate ? "Try selecting another day or clearing the filter" : "Start logging play sessions, completion dates, or ratings to build your timeline!"}
+        <div style={{ fontSize: "var(--font-size-base)", marginTop: "var(--space-1)" }}>
+          {selectedDate
+            ? "Try selecting another day or clearing the filter"
+            : "Start logging play sessions, completion dates, or ratings to build your timeline!"}
         </div>
       </div>
     );
@@ -179,15 +189,23 @@ export function TimelineFeed({ games, logs, selectedDate, onOpenGame }: Timeline
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--apple-label)", margin: 0 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--apple-label)", margin: 0 }}>
           {selectedDate ? `Events for ${formatDateLabel(selectedDate)}` : "Recent Activity Feed"}
-        </h3>
+        </h2>
         <span style={{ fontSize: "var(--font-size-base)", color: "var(--apple-secondary-label)" }}>
           {filteredEvents.length} {filteredEvents.length === 1 ? "entry" : "entries"}
         </span>
       </div>
 
-      <div style={{ position: "relative", paddingLeft: "var(--space-6)", display: "flex", flexDirection: "column", gap: 16 }}>
+      <div
+        style={{
+          position: "relative",
+          paddingLeft: "var(--space-6)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+        }}
+      >
         {/* Vertical timeline bar */}
         <div
           style={{
@@ -267,30 +285,69 @@ export function TimelineFeed({ games, logs, selectedDate, onOpenGame }: Timeline
                   }}
                 >
                   {imgUrl ? (
-                    <img src={imgUrl} alt={event.game.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <img
+                      src={imgUrl}
+                      alt={event.game.title}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
                   ) : null}
                 </div>
 
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                    <span style={{ fontSize: "var(--font-size-base)", fontWeight: 700, color, background: bg, padding: "2px var(--space-2)", borderRadius: 10 }}>
+                    <span
+                      style={{
+                        fontSize: "var(--font-size-base)",
+                        fontWeight: 700,
+                        color,
+                        background: bg,
+                        padding: "2px var(--space-2)",
+                        borderRadius: 10,
+                      }}
+                    >
                       {event.title}
                     </span>
-                    <span style={{ fontSize: "var(--font-size-sm)", color: "var(--apple-secondary-label)" }}>
+                    <span
+                      style={{
+                        fontSize: "var(--font-size-sm)",
+                        color: "var(--apple-secondary-label)",
+                      }}
+                    >
                       {formatDateLabel(event.dateStr)}
                     </span>
                   </div>
-                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: 700, color: "var(--apple-label)", margin: "var(--space-1) 0 2px 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <div
+                    style={{
+                      fontSize: "var(--font-size-lg)",
+                      fontWeight: 700,
+                      color: "var(--apple-label)",
+                      margin: "var(--space-1) 0 2px 0",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
                     {event.game.title}
                   </div>
-                  <div style={{ fontSize: "var(--font-size-base)", color: "var(--apple-secondary-label)" }}>
+                  <div
+                    style={{
+                      fontSize: "var(--font-size-base)",
+                      color: "var(--apple-secondary-label)",
+                    }}
+                  >
                     {event.description}
                   </div>
                 </div>
               </div>
 
               {/* Right action indicator */}
-              <div style={{ color: "var(--apple-tertiary-label)", display: "flex", alignItems: "center" }}>
+              <div
+                style={{
+                  color: "var(--apple-tertiary-label)",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
                 <ArrowRight size={18} />
               </div>
             </div>

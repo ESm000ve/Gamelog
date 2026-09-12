@@ -119,7 +119,7 @@ export function evaluateAchievements(games: Game[], logs: Log[]): AchievementSta
   games.forEach((g) => gameMap.set(g.igdbId, g));
 
   const totalGames = logs.length;
-  
+
   let rpgCount = 0;
   const uniqueGenres = new Set<string>();
   const uniquePlatforms = new Set<string>();
@@ -131,7 +131,7 @@ export function evaluateAchievements(games: Game[], logs: Log[]): AchievementSta
 
   logs.forEach((log) => {
     const game = gameMap.get(log.igdbId);
-    
+
     // Genres & RPG check
     if (game?.genres) {
       game.genres.forEach((g) => {
@@ -168,14 +168,19 @@ export function evaluateAchievements(games: Game[], logs: Log[]): AchievementSta
     if (log.finishedAt) activeDays.add(log.finishedAt);
     if (log.updatedAt) {
       const d = new Date(log.updatedAt);
-      activeDays.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`);
+      activeDays.add(
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+      );
     }
 
     // Completion
     if (log.status === "Played") {
       completedCount++;
     }
-    if ((log.completionPercentage && log.completionPercentage >= 100) || log.completion?.toLowerCase() === "completed") {
+    if (
+      (log.completionPercentage && log.completionPercentage >= 100) ||
+      log.completion?.toLowerCase() === "completed"
+    ) {
       perfectionistCount++;
     }
   });

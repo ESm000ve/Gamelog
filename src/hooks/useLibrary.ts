@@ -3,12 +3,13 @@ import { db } from "../db";
 import type { LibraryEntry, Status } from "../types";
 import { filterEntries, type FilterSpec } from "../services/filterEngine";
 
-export type SortKey = "recent" | "rating" | "title-asc" | "title-desc" | "year-desc" | "year-asc" | "time";
+export type SortKey =
+  "recent" | "rating" | "title-asc" | "title-desc" | "year-desc" | "year-asc" | "time";
 
 interface UseLibraryOptions {
   filters?: FilterSpec;
-  sort?:    SortKey;
-  search?:  string;
+  sort?: SortKey;
+  search?: string;
 }
 
 /**
@@ -18,14 +19,11 @@ interface UseLibraryOptions {
  */
 export function useLibrary({
   filters = {},
-  sort    = "year-asc",
-  search  = "",
+  sort = "year-asc",
+  search = "",
 }: UseLibraryOptions = {}) {
   return useLiveQuery(async () => {
-    const [games, logs] = await Promise.all([
-      db.games.toArray(),
-      db.logs.toArray(),
-    ]);
+    const [games, logs] = await Promise.all([db.games.toArray(), db.logs.toArray()]);
 
     const logMap = new Map(logs.map((l) => [l.igdbId, l]));
 
@@ -39,18 +37,16 @@ export function useLibrary({
     // Title search
     const q = search.trim().toLowerCase();
     if (q) {
-      entries = entries.filter((e) =>
-        e.game.title.toLowerCase().includes(q)
-      );
+      entries = entries.filter((e) => e.game.title.toLowerCase().includes(q));
     }
 
     // Sort
     switch (sort) {
       case "recent":
-        entries.sort((a, b) => b.game.addedAt  - a.game.addedAt);
+        entries.sort((a, b) => b.game.addedAt - a.game.addedAt);
         break;
       case "rating":
-        entries.sort((a, b) => (b.log.rating  ?? 0) - (a.log.rating  ?? 0));
+        entries.sort((a, b) => (b.log.rating ?? 0) - (a.log.rating ?? 0));
         break;
       case "title-asc":
         entries.sort((a, b) => a.game.title.localeCompare(b.game.title));
@@ -86,10 +82,10 @@ export function useLibraryCounts() {
   return useLiveQuery(async () => {
     const logs = await db.logs.toArray();
     const counts: Record<Status | "All", number> = {
-      All:      logs.length,
-      Playing:  0,
-      Backlog:  0,
-      Played:   0,
+      All: logs.length,
+      Playing: 0,
+      Backlog: 0,
+      Played: 0,
       Wishlist: 0,
     };
     for (const l of logs) {
@@ -102,10 +98,7 @@ export function useLibraryCounts() {
 /** Fetch a single LibraryEntry by igdbId. */
 export function useGame(igdbId: number) {
   return useLiveQuery(async () => {
-    const [game, log] = await Promise.all([
-      db.games.get(igdbId),
-      db.logs.get(igdbId),
-    ]);
+    const [game, log] = await Promise.all([db.games.get(igdbId), db.logs.get(igdbId)]);
     if (!game || !log) return null;
     return { game, log } as LibraryEntry;
   }, [igdbId]);

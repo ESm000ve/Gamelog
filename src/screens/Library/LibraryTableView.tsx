@@ -1,9 +1,15 @@
 import { useState } from "react";
 import type { Game, Log, Status, Completion } from "../../types";
-import { Star, Clock, Edit3, ArrowUpDown } from "lucide-react";
+import { Clock, Edit3, ArrowUpDown } from "lucide-react";
 import type { SortKey } from "../../hooks/useLibrary";
-import { STATUS_COLORS, STATUS_SUBTLE, COMPLETION_COLORS, COMPLETION_SUBTLE } from "../../components/StatusChip";
+import {
+  STATUS_COLORS,
+  STATUS_SUBTLE,
+  COMPLETION_COLORS,
+  COMPLETION_SUBTLE,
+} from "../../components/StatusChip";
 import { Button } from "../../components/ui/Button";
+import { StarRating } from "../../components/StarRating";
 
 interface LibraryTableViewProps {
   entries: { game: Game; log?: Log }[];
@@ -33,7 +39,11 @@ export function LibraryTableView({
       const c = status as Completion;
       return { label: c, color: COMPLETION_COLORS[c], bg: COMPLETION_SUBTLE[c] };
     }
-    return { label: "Unlogged", color: "var(--apple-secondary-label)", bg: "var(--apple-tertiary-bg)" };
+    return {
+      label: "Unlogged",
+      color: "var(--apple-secondary-label)",
+      bg: "var(--apple-tertiary-bg)",
+    };
   };
 
   const handleHeaderClick = (columnSort: SortKey) => {
@@ -86,8 +96,16 @@ export function LibraryTableView({
                 onClick={() => handleHeaderClick("title-asc")}
                 style={{ padding: "14px var(--space-5)", cursor: "pointer", userSelect: "none" }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 6, color: sortKey === "title-asc" ? "var(--apple-label)" : undefined }}>
-                  Title <ArrowUpDown size={12} style={{ opacity: sortKey === "title-asc" ? 1 : 0.6 }} />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    color: sortKey === "title-asc" ? "var(--apple-label)" : undefined,
+                  }}
+                >
+                  Title{" "}
+                  <ArrowUpDown size={12} style={{ opacity: sortKey === "title-asc" ? 1 : 0.6 }} />
                 </div>
               </th>
               <th style={{ padding: "14px var(--space-4)" }}>Status</th>
@@ -95,8 +113,16 @@ export function LibraryTableView({
                 onClick={() => handleHeaderClick("rating")}
                 style={{ padding: "14px var(--space-4)", cursor: "pointer", userSelect: "none" }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 6, color: sortKey === "rating" ? "var(--apple-label)" : undefined }}>
-                  Rating <ArrowUpDown size={12} style={{ opacity: sortKey === "rating" ? 1 : 0.6 }} />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    color: sortKey === "rating" ? "var(--apple-label)" : undefined,
+                  }}
+                >
+                  Rating{" "}
+                  <ArrowUpDown size={12} style={{ opacity: sortKey === "rating" ? 1 : 0.6 }} />
                 </div>
               </th>
               <th style={{ padding: "14px var(--space-4)" }}>Platform</th>
@@ -104,8 +130,16 @@ export function LibraryTableView({
                 onClick={() => handleHeaderClick("time")}
                 style={{ padding: "14px var(--space-4)", cursor: "pointer", userSelect: "none" }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 6, color: sortKey === "time" ? "var(--apple-label)" : undefined }}>
-                  Playtime <ArrowUpDown size={12} style={{ opacity: sortKey === "time" ? 1 : 0.6 }} />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    color: sortKey === "time" ? "var(--apple-label)" : undefined,
+                  }}
+                >
+                  Playtime{" "}
+                  <ArrowUpDown size={12} style={{ opacity: sortKey === "time" ? 1 : 0.6 }} />
                 </div>
               </th>
               <th style={{ padding: "14px var(--space-4)" }}>Progress</th>
@@ -156,8 +190,15 @@ export function LibraryTableView({
                         <div style={{ fontSize: 15, fontWeight: 600, color: "var(--apple-label)" }}>
                           {game.title}
                         </div>
-                        <div style={{ fontSize: "var(--font-size-sm)", color: "var(--apple-secondary-label)", marginTop: 2 }}>
-                          {game.releaseYear || "Unknown Year"} • {game.developer || game.genres?.[0] || "Game"}
+                        <div
+                          style={{
+                            fontSize: "var(--font-size-sm)",
+                            color: "var(--apple-secondary-label)",
+                            marginTop: 2,
+                          }}
+                        >
+                          {game.releaseYear || "Unknown Year"} •{" "}
+                          {game.developer || game.genres?.[0] || "Game"}
                         </div>
                       </div>
                     </div>
@@ -183,18 +224,39 @@ export function LibraryTableView({
                   {/* Rating */}
                   <td style={{ padding: "var(--space-3) var(--space-4)" }}>
                     {log?.rating && log.rating > 0 ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--apple-yellow)", fontWeight: 700, fontSize: 14 }}>
-                        <Star size={14} fill="var(--apple-yellow)" aria-hidden="true" />
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                          color: "var(--apple-yellow)",
+                          fontWeight: 700,
+                          fontSize: 14,
+                        }}
+                      >
+                        <StarRating rating={log.rating} size={14} showValue={false} />
                         {log.rating} / 5
                       </div>
                     ) : (
-                      <span style={{ color: "var(--apple-tertiary-label)", fontSize: "var(--font-size-base)"}}>—</span>
+                      <span
+                        style={{
+                          color: "var(--apple-tertiary-label)",
+                          fontSize: "var(--font-size-base)",
+                        }}
+                      >
+                        —
+                      </span>
                     )}
                   </td>
 
                   {/* Platform */}
                   <td style={{ padding: "var(--space-3) var(--space-4)" }}>
-                    <span style={{ fontSize: "var(--font-size-base)", color: "var(--apple-secondary-label)" }}>
+                    <span
+                      style={{
+                        fontSize: "var(--font-size-base)",
+                        color: "var(--apple-secondary-label)",
+                      }}
+                    >
                       {log?.platform || log?.platforms?.[0] || game.platforms?.[0] || "—"}
                     </span>
                   </td>
@@ -202,12 +264,28 @@ export function LibraryTableView({
                   {/* Playtime */}
                   <td style={{ padding: "var(--space-3) var(--space-4)" }}>
                     {log?.timePlayed && log.timePlayed > 0 ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--apple-label)", fontSize: "var(--font-size-base)", fontWeight: 500 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                          color: "var(--apple-label)",
+                          fontSize: "var(--font-size-base)",
+                          fontWeight: 500,
+                        }}
+                      >
                         <Clock size={14} color="var(--apple-secondary-label)" />
                         {log.timePlayed}h
                       </div>
                     ) : (
-                      <span style={{ color: "var(--apple-tertiary-label)", fontSize: "var(--font-size-base)"}}>—</span>
+                      <span
+                        style={{
+                          color: "var(--apple-tertiary-label)",
+                          fontSize: "var(--font-size-base)",
+                        }}
+                      >
+                        —
+                      </span>
                     )}
                   </td>
 
@@ -215,17 +293,53 @@ export function LibraryTableView({
                   <td style={{ padding: "var(--space-3) var(--space-4)", minWidth: 120 }}>
                     {log?.completionPercentage !== undefined && log.completionPercentage > 0 ? (
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--apple-tertiary-bg)", overflow: "hidden" }}>
-                          <div style={{ width: `${log.completionPercentage}%`, height: "100%", background: "var(--apple-accent)" }} />
+                        <div
+                          style={{
+                            flex: 1,
+                            height: 6,
+                            borderRadius: 3,
+                            background: "var(--apple-tertiary-bg)",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: `${log.completionPercentage}%`,
+                              height: "100%",
+                              background: "var(--apple-accent)",
+                            }}
+                          />
                         </div>
-                        <span style={{ fontSize: "var(--font-size-sm)", fontWeight: 600, color: "var(--apple-label)", width: 36, textAlign: "right" }}>
+                        <span
+                          style={{
+                            fontSize: "var(--font-size-sm)",
+                            fontWeight: 600,
+                            color: "var(--apple-label)",
+                            width: 36,
+                            textAlign: "right",
+                          }}
+                        >
                           {log.completionPercentage}%
                         </span>
                       </div>
                     ) : log?.completion ? (
-                      <span style={{ fontSize: "var(--font-size-base)", color: "var(--apple-secondary-label)" }}>{log.completion}</span>
+                      <span
+                        style={{
+                          fontSize: "var(--font-size-base)",
+                          color: "var(--apple-secondary-label)",
+                        }}
+                      >
+                        {log.completion}
+                      </span>
                     ) : (
-                      <span style={{ color: "var(--apple-tertiary-label)", fontSize: "var(--font-size-base)"}}>—</span>
+                      <span
+                        style={{
+                          color: "var(--apple-tertiary-label)",
+                          fontSize: "var(--font-size-base)",
+                        }}
+                      >
+                        —
+                      </span>
                     )}
                   </td>
 
@@ -236,7 +350,7 @@ export function LibraryTableView({
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onOpenLog && onOpenLog(game.igdbId);
+                        onOpenLog?.(game.igdbId);
                       }}
                       aria-label={`Edit log for ${game.title}`}
                       style={{ background: isHovered ? "var(--apple-fill)" : "transparent" }}

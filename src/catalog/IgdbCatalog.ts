@@ -18,12 +18,14 @@ class RealIgdbCatalog implements ICatalogSource {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(new Error("Timeout")), 8000);
-      const res = await fetch(`/api/igdb/search?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+      const res = await fetch(`/api/igdb/search?q=${encodeURIComponent(query)}`, {
+        signal: controller.signal,
+      });
       clearTimeout(timeout);
-      
+
       if (!res.ok) throw new Error(`IGDB proxy failed: ${res.statusText}`);
-      
-      const raw = await res.json() as IgdbSearchResult[];
+
+      const raw = (await res.json()) as IgdbSearchResult[];
       const results = raw.map(normalise);
       searchCache.set(q, results);
       return results;
@@ -38,12 +40,15 @@ class RealIgdbCatalog implements ICatalogSource {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(new Error("Timeout")), 8000);
-      const res = await fetch(`/api/igdb/search?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`, { signal: controller.signal });
+      const res = await fetch(
+        `/api/igdb/search?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`,
+        { signal: controller.signal }
+      );
       clearTimeout(timeout);
-      
+
       if (!res.ok) throw new Error(`IGDB proxy failed: ${res.statusText}`);
-      
-      const raw = await res.json() as IgdbSearchResult[];
+
+      const raw = (await res.json()) as IgdbSearchResult[];
       return raw.map(normalise);
     } catch (err) {
       console.warn("IGDB searchAll failed, falling back to local stub:", err);
@@ -60,40 +65,36 @@ class RealIgdbCatalog implements ICatalogSource {
       const timeout = setTimeout(() => controller.abort(new Error("Timeout")), 8000);
       const res = await fetch(`/api/igdb/fetch?id=${igdbId}`, { signal: controller.signal });
       clearTimeout(timeout);
-      
+
       if (!res.ok) throw new Error(`IGDB proxy failed: ${res.statusText}`);
-      
-      const raw = await res.json() as IgdbSearchResult[];
+
+      const raw = (await res.json()) as IgdbSearchResult[];
       const result = raw.length ? normalise(raw[0]) : null;
       if (result) fetchCache.set(igdbId, result);
       return result;
     } catch (err) {
       console.warn("IGDB fetch failed, falling back to local stub:", err);
       const stub = await getGame(igdbId);
-      return stub ? igdbGameToGame(stub) as unknown as CatalogGame : null;
+      return stub ? (igdbGameToGame(stub) as unknown as CatalogGame) : null;
     }
   }
 }
 
 function normalise(raw: IgdbSearchResult): CatalogGame {
-  const developer =
-    raw.involved_companies?.find((ic) => ic.developer)?.company.name ?? "Unknown";
-  const publisher =
-    raw.involved_companies?.find((ic) => ic.publisher)?.company.name;
+  const developer = raw.involved_companies?.find((ic) => ic.developer)?.company.name ?? "Unknown";
+  const publisher = raw.involved_companies?.find((ic) => ic.publisher)?.company.name;
   return {
-    igdbId:      raw.id,
-    title:       raw.name,
-    slug:        raw.slug,
+    igdbId: raw.id,
+    title: raw.name,
+    slug: raw.slug,
     developer,
     publisher,
-    releaseYear: raw.first_release_date
-      ? new Date(raw.first_release_date * 1000).getFullYear()
-      : 0,
-    summary:     raw.summary,
-    genres:      raw.genres?.map((g) => g.name) ?? [],
-    platforms:   raw.platforms?.map((p) => p.name) ?? [],
-    coverUrl:    raw.cover ? igdbCoverUrl(raw.cover.image_id) : undefined,
-    igdbRating:  raw.rating ? Math.round(raw.rating) : undefined,
+    releaseYear: raw.first_release_date ? new Date(raw.first_release_date * 1000).getFullYear() : 0,
+    summary: raw.summary,
+    genres: raw.genres?.map((g) => g.name) ?? [],
+    platforms: raw.platforms?.map((p) => p.name) ?? [],
+    coverUrl: raw.cover ? igdbCoverUrl(raw.cover.image_id) : undefined,
+    igdbRating: raw.rating ? Math.round(raw.rating) : undefined,
   };
 }
 

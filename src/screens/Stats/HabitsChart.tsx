@@ -20,15 +20,15 @@ export function HabitsChart({ logs }: HabitsChartProps) {
     }
 
     const sortedDays = Array.from(playDays).sort();
-    
+
     let max = 0;
     let curr = 0;
     let lastDate: Date | null = null;
-    
+
     // Simple streak calculation
     for (const ds of sortedDays) {
       const d = new Date(ds);
-      d.setHours(0,0,0,0);
+      d.setHours(0, 0, 0, 0);
       if (!lastDate) {
         curr = 1;
       } else {
@@ -66,19 +66,88 @@ export function HabitsChart({ logs }: HabitsChartProps) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "flex", gap: 24, paddingBottom: "var(--space-4)", borderBottom: "1px solid var(--apple-separator)" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 24,
+          paddingBottom: "var(--space-4)",
+          borderBottom: "1px solid var(--apple-separator)",
+        }}
+      >
         <div>
-          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--apple-tertiary-label)", fontWeight: 500, textTransform: "uppercase" }}>Current Streak</p>
-          <p style={{ fontSize: 24, fontWeight: 700, color: "var(--apple-label)", fontFamily: "var(--apple-font-display)" }}>{currentStreak} <span style={{ fontSize: "var(--font-size-lg)", fontWeight: 500, color: "var(--apple-secondary-label)" }}>days</span></p>
+          <p
+            style={{
+              fontSize: "var(--font-size-sm)",
+              color: "var(--apple-tertiary-label)",
+              fontWeight: 500,
+              textTransform: "uppercase",
+            }}
+          >
+            Current Streak
+          </p>
+          <p
+            style={{
+              fontSize: 24,
+              fontWeight: 700,
+              color: "var(--apple-label)",
+              fontFamily: "var(--apple-font-display)",
+            }}
+          >
+            {currentStreak}{" "}
+            <span
+              style={{
+                fontSize: "var(--font-size-lg)",
+                fontWeight: 500,
+                color: "var(--apple-secondary-label)",
+              }}
+            >
+              days
+            </span>
+          </p>
         </div>
         <div>
-          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--apple-tertiary-label)", fontWeight: 500, textTransform: "uppercase" }}>Longest Streak</p>
-          <p style={{ fontSize: 24, fontWeight: 700, color: "var(--apple-label)", fontFamily: "var(--apple-font-display)" }}>{maxStreak} <span style={{ fontSize: "var(--font-size-lg)", fontWeight: 500, color: "var(--apple-secondary-label)" }}>days</span></p>
+          <p
+            style={{
+              fontSize: "var(--font-size-sm)",
+              color: "var(--apple-tertiary-label)",
+              fontWeight: 500,
+              textTransform: "uppercase",
+            }}
+          >
+            Longest Streak
+          </p>
+          <p
+            style={{
+              fontSize: 24,
+              fontWeight: 700,
+              color: "var(--apple-label)",
+              fontFamily: "var(--apple-font-display)",
+            }}
+          >
+            {maxStreak}{" "}
+            <span
+              style={{
+                fontSize: "var(--font-size-lg)",
+                fontWeight: 500,
+                color: "var(--apple-secondary-label)",
+              }}
+            >
+              days
+            </span>
+          </p>
         </div>
       </div>
-      
+
       <div>
-        <p style={{ fontSize: "var(--font-size-sm)", color: "var(--apple-tertiary-label)", marginBottom: "var(--space-2)"}}>Play Activity (Last 365 Days)</p>
+        <p
+          style={{
+            fontSize: "var(--font-size-sm)",
+            color: "var(--apple-tertiary-label)",
+            marginBottom: "var(--space-2)",
+          }}
+        >
+          Play Activity (Last 365 Days)
+        </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(52, 1fr)", gap: 4 }}>
           {Array.from({ length: 52 }).map((_, colIdx) => (
             <div key={colIdx} style={{ display: "flex", flexDirection: "column", gap: 4 }}>

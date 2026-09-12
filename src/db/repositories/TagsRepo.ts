@@ -12,7 +12,7 @@ export const TagsRepo = {
 
     // Case-insensitive lookup
     const allTags = await db.tags.toArray();
-    let tag = allTags.find(t => t.name.toLowerCase() === trimmedName.toLowerCase());
+    let tag = allTags.find((t) => t.name.toLowerCase() === trimmedName.toLowerCase());
 
     if (!tag) {
       tag = {
@@ -25,5 +25,5 @@ export const TagsRepo = {
     }
 
     return tag;
-  }
+  },
 };

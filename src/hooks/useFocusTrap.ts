@@ -7,7 +7,8 @@ import { useEffect } from "react";
  */
 export function useFocusTrap(
   ref: React.RefObject<any>,
-  isActive: boolean = true
+  isActive: boolean = true,
+  initialFocusRef?: React.RefObject<HTMLElement>
 ) {
   useEffect(() => {
     if (!isActive || !ref.current) return;
@@ -19,10 +20,11 @@ export function useFocusTrap(
     const getFocusableElements = () => {
       return Array.from(
         container.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          'a[href], button:not([disabled]):not([aria-disabled="true"]), textarea:not([disabled]):not([aria-disabled="true"]), input[type="text"]:not([disabled]):not([aria-disabled="true"]), input[type="radio"]:not([disabled]):not([aria-disabled="true"]), input[type="checkbox"]:not([disabled]):not([aria-disabled="true"]), select:not([disabled]):not([aria-disabled="true"]), [tabindex]:not([tabindex="-1"])'
         )
-      ).filter(el => {
-        // Ensure the element is actually visible
+      ).filter((el) => {
+        // Ensure the element is actually visible and not within an aria-hidden container
+        if (el.closest('[aria-hidden="true"]')) return false;
         return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0;
       });
     };
@@ -57,13 +59,17 @@ export function useFocusTrap(
     // Initial focus on the container or first element
     // setTimeout is needed because the dialog might be rendering and animating
     const focusTimeout = setTimeout(() => {
+      if (initialFocusRef && initialFocusRef.current) {
+        initialFocusRef.current.focus();
+      } else {
         const focusableElements = getFocusableElements();
         // If the container itself has tabIndex={-1}, we can focus it directly
-        if (container.hasAttribute('tabindex')) {
-            container.focus();
+        if (container.hasAttribute("tabindex")) {
+          container.focus();
         } else if (focusableElements.length > 0) {
-            focusableElements[0].focus();
+          focusableElements[0].focus();
         }
+      }
     }, 10);
 
     document.addEventListener("keydown", handleKeyDown);
@@ -76,7 +82,7 @@ export function useFocusTrap(
         // Also use timeout to restore focus just in case the modal closing animation
         // interferes with focus restoring.
         setTimeout(() => {
-             previouslyFocusedElement.focus();
+          previouslyFocusedElement.focus();
         }, 10);
       }
     };

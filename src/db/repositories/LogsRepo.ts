@@ -2,17 +2,17 @@ import { db } from "../schema";
 import type { Log, Status, Completion, Ownership } from "../../types";
 
 export interface LogUpdate {
-  status:      Status;
+  status: Status;
   completion?: Completion;
-  rating?:     number;
-  platform?:   string;
-  platforms?:  string[];
+  rating?: number;
+  platform?: string;
+  platforms?: string[];
   timePlayed?: number;
-  startedAt?:  string;
+  startedAt?: string;
   finishedAt?: string;
-  ownership?:  Ownership[];
-  notes?:      string;
-  tagIds?:     string[];
+  ownership?: Ownership[];
+  notes?: string;
+  tagIds?: string[];
   completionPercentage?: number;
   playSessions?: { date: string; durationMinutes?: number }[];
 }
@@ -24,7 +24,7 @@ export const LogsRepo = {
       ...update,
       // Clear completion if switching away from Played
       completion: update.status === "Played" ? update.completion : undefined,
-      updatedAt:  Date.now(),
+      updatedAt: Date.now(),
     });
   },
 
@@ -41,7 +41,7 @@ export const LogsRepo = {
     const sessions = log.playSessions || [];
     await db.logs.update(igdbId, {
       playSessions: [...sessions, { date: today, durationMinutes: 60 }],
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     });
   },
 
@@ -53,5 +53,5 @@ export const LogsRepo = {
   /** Retrieves all logs. */
   async getAll(): Promise<Log[]> {
     return db.logs.toArray();
-  }
+  },
 };

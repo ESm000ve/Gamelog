@@ -19,31 +19,31 @@ export function filterEntries(entries: LibraryEntry[], spec: FilterSpec): Librar
 
     // Genres (OR logic within the facet: matches if the game has ANY of the selected genres)
     if (spec.genres && spec.genres.length > 0) {
-      const hasGenre = spec.genres.some(genre => {
+      const hasGenre = spec.genres.some((genre) => {
         const searchTerms = [genre.toLowerCase()];
         if (genre === "Sports") searchTerms.push("sport");
         if (genre === "Simulation") searchTerms.push("simulator", "sim");
         if (genre === "Platform") searchTerms.push("platformer");
-        
-        return game.genres.some(g => 
-          searchTerms.some(term => g.toLowerCase().includes(term))
-        );
+
+        return game.genres.some((g) => searchTerms.some((term) => g.toLowerCase().includes(term)));
       });
       if (!hasGenre) return false;
     }
 
     // Platforms (OR logic within the facet)
     if (spec.platforms && spec.platforms.length > 0) {
-      const hasPlatform = spec.platforms.some(plat => 
-        game.platforms.some(p => p.toLowerCase().includes(plat.toLowerCase()))
+      const hasPlatform = spec.platforms.some((plat) =>
+        game.platforms.some((p) => p.toLowerCase().includes(plat.toLowerCase()))
       );
       if (!hasPlatform) return false;
     }
 
     // Release Year Range
     if (spec.releaseYear) {
-      if (spec.releaseYear.min !== undefined && game.releaseYear < spec.releaseYear.min) return false;
-      if (spec.releaseYear.max !== undefined && game.releaseYear > spec.releaseYear.max) return false;
+      if (spec.releaseYear.min !== undefined && game.releaseYear < spec.releaseYear.min)
+        return false;
+      if (spec.releaseYear.max !== undefined && game.releaseYear > spec.releaseYear.max)
+        return false;
     }
 
     // Time to Beat Range
@@ -65,7 +65,7 @@ export function filterEntries(entries: LibraryEntry[], spec: FilterSpec): Librar
     // Tags (AND logic within the facet: matches if the game has ALL of the selected tags)
     if (spec.tagIds && spec.tagIds.length > 0) {
       if (!log.tagIds) return false;
-      const hasAllTags = spec.tagIds.every(tid => log.tagIds!.includes(tid));
+      const hasAllTags = spec.tagIds.every((tid) => log.tagIds!.includes(tid));
       if (!hasAllTags) return false;
     }
 

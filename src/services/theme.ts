@@ -1,5 +1,6 @@
 export type ThemeMode = "dark" | "light" | "system";
-export type AccentColor = "indigo" | "green" | "blue" | "orange" | "pink" | "gold" | "purple" | "red";
+export type AccentColor =
+  "indigo" | "green" | "blue" | "orange" | "pink" | "gold" | "purple" | "red";
 
 export interface AccentOption {
   id: AccentColor;
@@ -8,14 +9,14 @@ export interface AccentOption {
 }
 
 export const ACCENT_OPTIONS: AccentOption[] = [
-  { id: "indigo", name: "Indigo", hex: "#5e5ce6" },
-  { id: "green",  name: "Green",  hex: "#30d158" },
-  { id: "blue",   name: "Blue",   hex: "#0a84ff" },
-  { id: "orange", name: "Orange", hex: "#ff9f0a" },
-  { id: "pink",   name: "Pink",   hex: "#ff375f" },
-  { id: "gold",   name: "Gold",   hex: "#ffd60a" },
-  { id: "purple", name: "Purple", hex: "#bf5af2" },
-  { id: "red",    name: "Red",    hex: "#ff453a" },
+  { id: "indigo", name: "Indigo", hex: "var(--apple-indigo)" },
+  { id: "green", name: "Green", hex: "var(--apple-green)" },
+  { id: "blue", name: "Blue", hex: "var(--apple-blue)" },
+  { id: "orange", name: "Orange", hex: "var(--apple-orange)" },
+  { id: "pink", name: "Pink", hex: "var(--apple-pink)" },
+  { id: "gold", name: "Gold", hex: "var(--apple-yellow)" },
+  { id: "purple", name: "Purple", hex: "var(--apple-purple)" },
+  { id: "red", name: "Red", hex: "var(--apple-red)" },
 ];
 
 const THEME_KEY = "gamelog_theme_mode";

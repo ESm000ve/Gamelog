@@ -1,0 +1,82 @@
+/* ─── SpotlightBanner ────────────────────────────────────────────────────── */
+
+.spotlight-banner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: var(--space-5);
+  margin: 0 var(--space-8) var(--space-6);
+  background: var(--apple-secondary-bg);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--apple-separator);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.spotlight-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.spotlight-banner-cover {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--apple-tertiary-bg);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.spotlight-banner-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spotlight-banner-body {
+  flex: 1;
+}
+
+.spotlight-banner-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--space-1);
+}
+
+.spotlight-banner-label span {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--apple-secondary-label);
+}
+
+.spotlight-banner-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin-bottom: var(--space-1);
+}
+
+.spotlight-banner-reason {
+  font-size: var(--font-size-base);
+  color: var(--apple-tertiary-label);
+  line-height: 1.4;
+}
+
+.spotlight-banner-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--apple-fill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--apple-label);
+  flex-shrink: 0;
+}

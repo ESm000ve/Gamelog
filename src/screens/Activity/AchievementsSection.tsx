@@ -1,8 +1,20 @@
 import { useState } from "react";
 import type { AchievementStatus } from "../../services/achievements";
-import { 
-  Trophy, CheckCircle2, Star, Award, Clock, Flame, 
-  Gamepad2, Library, Sword, Compass, Monitor, Zap, Lock 
+import { Button } from "../../components/ui/Button";
+import {
+  Trophy,
+  CheckCircle2,
+  Star,
+  Award,
+  Clock,
+  Flame,
+  Gamepad2,
+  Library,
+  Sword,
+  Compass,
+  Monitor,
+  Zap,
+  Lock,
 } from "lucide-react";
 
 interface AchievementsSectionProps {
@@ -25,19 +37,32 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
     const color = unlocked ? "var(--apple-yellow)" : "var(--apple-secondary-label)";
     const size = 24;
     switch (iconName) {
-      case "Gamepad2": return <Gamepad2 size={size} color={color} />;
-      case "Library": return <Library size={size} color={color} />;
-      case "Sword": return <Sword size={size} color={color} />;
-      case "Compass": return <Compass size={size} color={color} />;
-      case "Monitor": return <Monitor size={size} color={color} />;
-      case "Star": return <Star size={size} color={color} />;
-      case "Award": return <Award size={size} color={color} />;
-      case "Clock": return <Clock size={size} color={color} />;
-      case "Flame": return <Flame size={size} color={color} />;
-      case "CheckCircle2": return <CheckCircle2 size={size} color={color} />;
-      case "Trophy": return <Trophy size={size} color={color} />;
-      case "Zap": return <Zap size={size} color={color} />;
-      default: return <Trophy size={size} color={color} />;
+      case "Gamepad2":
+        return <Gamepad2 size={size} color={color} />;
+      case "Library":
+        return <Library size={size} color={color} />;
+      case "Sword":
+        return <Sword size={size} color={color} />;
+      case "Compass":
+        return <Compass size={size} color={color} />;
+      case "Monitor":
+        return <Monitor size={size} color={color} />;
+      case "Star":
+        return <Star size={size} color={color} />;
+      case "Award":
+        return <Award size={size} color={color} />;
+      case "Clock":
+        return <Clock size={size} color={color} />;
+      case "Flame":
+        return <Flame size={size} color={color} />;
+      case "CheckCircle2":
+        return <CheckCircle2 size={size} color={color} />;
+      case "Trophy":
+        return <Trophy size={size} color={color} />;
+      case "Zap":
+        return <Zap size={size} color={color} />;
+      default:
+        return <Trophy size={size} color={color} />;
     }
   };
 
@@ -46,7 +71,8 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
       {/* Master Progress Header Card */}
       <div
         style={{
-          background: "linear-gradient(135deg, rgba(255, 214, 10, 0.15) 0%, rgba(255, 159, 10, 0.05) 100%)",
+          background:
+            "linear-gradient(135deg, rgba(255, 214, 10, 0.15) 0%, rgba(255, 159, 10, 0.05) 100%)",
           border: "1px solid rgba(255, 214, 10, 0.3)",
           borderRadius: 16,
           padding: "var(--space-6)",
@@ -63,27 +89,47 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
               width: 56,
               height: 56,
               borderRadius: 16,
-              background: "linear-gradient(135deg, var(--apple-yellow) 0%, var(--apple-orange) 100%)",
+              background:
+                "linear-gradient(135deg, var(--apple-yellow) 0%, var(--apple-orange) 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               boxShadow: "0 4px 16px rgba(255, 214, 10, 0.3)",
             }}
           >
-            <Trophy size={30} color="#000" />
+            <Trophy size={30} color="var(--apple-black)" />
           </div>
           <div>
-            <h3 style={{ fontSize: "var(--font-size-xl)", fontWeight: 700, color: "var(--apple-label)", margin: 0 }}>
+            <h3
+              style={{
+                fontSize: "var(--font-size-xl)",
+                fontWeight: 700,
+                color: "var(--apple-label)",
+                margin: 0,
+              }}
+            >
               Library Mastery
             </h3>
-            <p style={{ fontSize: "var(--font-size-base)", color: "var(--apple-secondary-label)", margin: "var(--space-1) 0 0 0" }}>
+            <p
+              style={{
+                fontSize: "var(--font-size-base)",
+                color: "var(--apple-secondary-label)",
+                margin: "var(--space-1) 0 0 0",
+              }}
+            >
               Unlock badges by logging, exploring, and completing games in your library.
             </p>
           </div>
         </div>
 
         <div style={{ minWidth: 200, flex: "1 1 200px", maxWidth: 300 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "var(--space-2)"}}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "var(--space-2)",
+            }}
+          >
             <span style={{ fontSize: 14, fontWeight: 700, color: "var(--apple-label)" }}>
               {unlockedCount} / {achievements.length} Unlocked
             </span>
@@ -104,7 +150,8 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
               style={{
                 width: `${masterPercentage}%`,
                 height: "100%",
-                background: "linear-gradient(90deg, var(--apple-yellow) 0%, var(--apple-orange) 100%)",
+                background:
+                  "linear-gradient(90deg, var(--apple-yellow) 0%, var(--apple-orange) 100%)",
                 transition: "width 300ms ease",
               }}
             />
@@ -113,8 +160,15 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
       </div>
 
       {/* Filter Tabs */}
-      <div style={{ display: "flex", gap: 8, borderBottom: "1px solid var(--apple-separator)", paddingBottom: "var(--space-3)"}}>
-        <button
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          borderBottom: "1px solid var(--apple-separator)",
+          paddingBottom: "var(--space-3)",
+        }}
+      >
+        <Button
           type="button"
           onClick={() => setFilter("all")}
           style={{
@@ -130,8 +184,8 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
           }}
         >
           All ({achievements.length})
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => setFilter("unlocked")}
           style={{
@@ -147,8 +201,8 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
           }}
         >
           Unlocked ({unlockedCount})
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => setFilter("progress")}
           style={{
@@ -164,7 +218,7 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
           }}
         >
           In Progress ({achievements.length - unlockedCount})
-        </button>
+        </Button>
       </div>
 
       {/* Grid of Achievement Cards */}
@@ -198,7 +252,13 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
               }}
             >
               {/* Top Row: Icon + Category Badge */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                }}
+              >
                 <div
                   style={{
                     width: 48,
@@ -268,16 +328,36 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
                   {ach.title}
                   {!ach.unlocked && <Lock size={14} style={{ opacity: 0.4 }} />}
                 </h4>
-                <p style={{ fontSize: "var(--font-size-base)", color: "var(--apple-secondary-label)", margin: 0, lineHeight: 1.4 }}>
+                <p
+                  style={{
+                    fontSize: "var(--font-size-base)",
+                    color: "var(--apple-secondary-label)",
+                    margin: 0,
+                    lineHeight: 1.4,
+                  }}
+                >
                   {ach.description}
                 </p>
               </div>
 
               {/* Progress bar (if not unlocked) */}
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--font-size-sm)", marginBottom: 6, color: "var(--apple-secondary-label)" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: "var(--font-size-sm)",
+                    marginBottom: 6,
+                    color: "var(--apple-secondary-label)",
+                  }}
+                >
                   <span>Progress</span>
-                  <span style={{ fontWeight: 600, color: ach.unlocked ? "var(--apple-yellow)" : "var(--apple-label)" }}>
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: ach.unlocked ? "var(--apple-yellow)" : "var(--apple-label)",
+                    }}
+                  >
                     {ach.current} / {ach.target}
                   </span>
                 </div>

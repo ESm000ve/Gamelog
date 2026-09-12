@@ -1,0 +1,49 @@
+/* ─── CoverCardMetadata ──────────────────────────────────────────────────── */
+
+.card-metadata {
+  padding: 0 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.card-metadata-platform {
+  font-size: 11px;
+  color: var(--apple-secondary-label);
+  font-family: var(--apple-font-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  min-height: 14px;
+}
+
+.card-metadata-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 20px;
+}
+
+.card-metadata-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--space-2);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--apple-font-text);
+}
+
+.card-metadata-rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--apple-secondary-label);
+  font-size: 11px;
+  font-weight: 500;
+}

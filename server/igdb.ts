@@ -276,6 +276,7 @@ export function attachIgdbRoutes(app: any) {
               };
             }
           } catch (e) {
+            console.warn("Failed to fetch HLTB data", e);
             // time_to_beat is optional, ignore failures
           }
 

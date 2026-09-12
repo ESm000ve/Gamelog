@@ -39,7 +39,7 @@ async function main() {
       let d = '';
       res.on('data', chunk => d += chunk);
       res.on('end', () => {
-        try { resolve(JSON.parse(d)); } catch(e) { resolve(d); }
+        try { resolve(JSON.parse(d)); } catch(e) { console.error(e); resolve(d); }
       });
     });
     req.on('error', reject);

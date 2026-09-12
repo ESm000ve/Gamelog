@@ -82,9 +82,9 @@ a:hover {
   overflow: hidden;
 }
 
-
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -97,4 +97,127 @@ body.sb-show-main,
 body.sb-main-padded,
 body.sb-main-fullscreen {
   overflow: auto !important;
+}
+
+/* ── Accessibility utilities ────────────────────────────────────────────── */
+
+/* Visually hidden but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: 9999;
+  padding: var(--space-2) var(--space-4);
+  background: var(--apple-accent);
+  color: var(--apple-accent-foreground, var(--apple-white));
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  text-decoration: none;
+  outline: 3px solid var(--apple-accent);
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+  left: var(--space-4);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--apple-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Layout Utilities ────────────────────────────────────────────────────── */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-row {
+  display: flex;
+  align-items: center;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.gap-2 {
+  gap: 8px;
+}
+.gap-3 {
+  gap: 12px;
+}
+.gap-4 {
+  gap: 16px;
+}
+.w-full {
+  width: 100%;
+}
+.h-full {
+  height: 100%;
+}
+
+/* ── Typography Utilities ────────────────────────────────────────────────── */
+.text-display {
+  font-family: var(--apple-font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--apple-label);
+  letter-spacing: -0.015em;
+  line-height: 1;
+}
+.text-body {
+  font-family: var(--apple-font-text);
+  font-size: var(--font-size-base);
+  color: var(--apple-label);
+}
+.text-muted {
+  color: var(--apple-secondary-label);
+}
+
+/* ── UI Components Utilities ─────────────────────────────────────────────── */
+.glass-panel {
+  background: var(--apple-toolbar-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--apple-separator);
+}
+
+.hover-scale {
+  transition:
+    transform 0.2s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.2s ease;
+}
+.hover-scale:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.btn-icon:hover {
+  background: var(--apple-fill);
 }

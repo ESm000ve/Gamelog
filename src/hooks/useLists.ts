@@ -4,9 +4,7 @@ import type { LibraryEntry, Game, Log } from "../types";
 
 /** All lists, sorted by creation date (newest first). */
 export function useLists() {
-  return useLiveQuery(() =>
-    db.lists.orderBy("createdAt").reverse().toArray()
-  );
+  return useLiveQuery(() => db.lists.orderBy("createdAt").reverse().toArray());
 }
 
 /** A single list by id. */
@@ -23,13 +21,13 @@ export function useListEntries(gameIds: number[]) {
       db.logs.where("igdbId").anyOf(gameIds).toArray(),
     ]);
     const gameMap = new Map<number, Game>(games.map((g) => [g.igdbId, g]));
-    const logMap  = new Map<number, Log>(logs.map((l)  => [l.igdbId, l]));
+    const logMap = new Map<number, Log>(logs.map((l) => [l.igdbId, l]));
 
     // Preserve the list order
     return gameIds
       .map((id) => {
         const game = gameMap.get(id);
-        const log  = logMap.get(id);
+        const log = logMap.get(id);
         if (!game || !log) return null;
         return { game, log } as LibraryEntry;
       })

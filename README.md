@@ -1,36 +1,50 @@
 # Gamelog
 
-A personal game library tracker with a beautiful macOS-inspired interface.
+A clean, beautiful, and private personal game library tracker inspired by macOS Human Interface Guidelines. Keep track of what you're playing, what you want to play, and what you've beaten.
 
-## Running It
+## Features
+
+- **Beautiful UI:** A meticulously crafted interface featuring glassmorphism, dynamic animations, and a rich dark mode.
+- **Privacy First:** All data is stored locally in your browser using IndexedDB. Your data never leaves your device.
+- **Rich Library Management:** Organize games by status, platform, release year, and custom lists.
+- **Discover:** Search and add games to your library instantly.
+- **Activity Logging:** Log your playtime, ratings, and thoughts for every game.
+
+## Tech Stack
+
+- **Framework:** React + Vite
+- **Styling:** Vanilla CSS with custom design tokens
+- **Database:** Dexie (IndexedDB)
+- **Icons:** Lucide React
+- **Packaging:** Electron (Optional for Desktop builds)
+
+## Getting Started
 
 **Minimum Requirements:** Node.js version 18 or higher.
 
-To start the app, simply double-click the `start.command` script in the root of the project. 
-This will automatically verify your Node version, install any missing dependencies, and launch the development server.
+### Development
 
-Alternatively, you can run `./run.sh` from the terminal, or manually start it using:
+To start the app in development mode, run:
+
 ```bash
 npm install
 npm run dev
 ```
 
-## Where My Data Lives
+Alternatively on macOS, you can double-click the `start.command` script in the root of the project to automatically verify your Node version, install dependencies, and launch the dev server.
 
-All of your data (library entries, logs, and lists) is securely stored locally on your machine using IndexedDB, built into your browser. Here is where the data is physically located on disk depending on your default browser (macOS):
+### Desktop App (Electron)
 
+If you'd like to bundle Gamelog into a standalone `.app` for macOS:
+
+```bash
+npm run build:desktop
+```
+This will compile the app and use `electron-builder` to package it into the `release/` folder.
+
+## Data Storage
+
+Your data is stored locally via IndexedDB. 
 - **Safari:** `~/Library/Safari/Databases/` or `~/Library/Containers/com.apple.Safari/Data/Library/WebKit/Databases/`
 - **Chrome / Brave:** `~/Library/Application Support/Google/Chrome/Default/IndexedDB/`
 - **Firefox:** `~/Library/Application Support/Firefox/Profiles/<profile-folder>/storage/default/`
-
-Your data never leaves your device unless you explicitly export it.
-
-## Packaging Assessment (Tauri vs. Electron)
-
-If you'd like to bundle Gamelog into a standalone, double-clickable `.app` for macOS in the future without needing a terminal, here are the two main options:
-
-1. **Tauri:**
-   - **Tradeoffs:** Results in an extremely small app size (often under 10MB) and very low memory usage because it uses the system's native WebView (WebKit on macOS) rather than bundling a whole browser. 
-   - **Requirements:** Requires installing Rust on your machine to compile the native wrapper.
-2. **Electron:**
-   - **Tradeoffs:** Much larger app size (typically 100MB+) and higher RAM usage because it bundles a full Chromium browser. However, it guarantees cross-platform consistency since you control the browser engine, and it uses pure JavaScript/TypeScript for both the UI and backend logic.

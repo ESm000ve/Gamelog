@@ -20,15 +20,18 @@ export const steamImportSource: IImportSource = {
     }));
   },
 
-  async matchGames(games: ImportedGame[], onProgress?: (pct: number, msg: string) => void): Promise<MatchedImportGame[]> {
-    const appIds = games.map(g => g.sourceId);
-    
+  async matchGames(
+    games: ImportedGame[],
+    onProgress?: (pct: number, msg: string) => void
+  ): Promise<MatchedImportGame[]> {
+    const appIds = games.map((g) => g.sourceId);
+
     if (onProgress) onProgress(10, "Matching games against IGDB database...");
-    
-    const res = await fetch('/api/igdb/match-steam', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ appIds })
+
+    const res = await fetch("/api/igdb/match-steam", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ appIds }),
     });
 
     let exactMatches: Record<string, CatalogGame> = {};
@@ -39,11 +42,11 @@ export const steamImportSource: IImportSource = {
     }
 
     const results: MatchedImportGame[] = [];
-    const unmatched = games.filter(g => !exactMatches[g.sourceId]);
-    
+    const unmatched = games.filter((g) => !exactMatches[g.sourceId]);
+
     // Fuzzy matching for unmatched games
     const fuzzyMatches = new Map<string, CatalogGame | null>();
-    
+
     let processed = 0;
     const chunkedUnmatched = [];
     for (let i = 0; i < unmatched.length; i += 5) {
@@ -51,19 +54,22 @@ export const steamImportSource: IImportSource = {
     }
 
     for (const chunk of chunkedUnmatched) {
-      await Promise.all(chunk.map(async (g) => {
-        try {
-          // Add year to search if possible? Steam doesn't provide release year in GetOwnedGames
-          const searchRes = await catalog.search(g.sourceName);
-          if (searchRes.length > 0) {
-            fuzzyMatches.set(g.sourceId, searchRes[0]);
-          } else {
+      await Promise.all(
+        chunk.map(async (g) => {
+          try {
+            // Add year to search if possible? Steam doesn't provide release year in GetOwnedGames
+            const searchRes = await catalog.search(g.sourceName);
+            if (searchRes.length > 0) {
+              fuzzyMatches.set(g.sourceId, searchRes[0]);
+            } else {
+              fuzzyMatches.set(g.sourceId, null);
+            }
+          } catch (err) {
+            console.warn("Failed to search steam game on IGDB", err);
             fuzzyMatches.set(g.sourceId, null);
           }
-        } catch (err) {
-          fuzzyMatches.set(g.sourceId, null);
-        }
-      }));
+        })
+      );
       processed += chunk.length;
       if (onProgress) {
         const pct = 10 + Math.round((processed / Math.max(unmatched.length, 1)) * 90);
@@ -76,19 +82,19 @@ export const steamImportSource: IImportSource = {
         results.push({
           imported: g,
           igdbGame: exactMatches[g.sourceId],
-          confidence: "high"
+          confidence: "high",
         });
       } else {
         const fuzzy = fuzzyMatches.get(g.sourceId);
         results.push({
           imported: g,
           igdbGame: fuzzy || null,
-          confidence: fuzzy ? "low" : "none"
+          confidence: fuzzy ? "low" : "none",
         });
       }
     }
 
     if (onProgress) onProgress(100, "Matching complete");
     return results;
-  }
+  },
 };

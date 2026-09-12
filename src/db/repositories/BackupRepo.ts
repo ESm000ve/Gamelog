@@ -2,11 +2,11 @@ import { db } from "../schema";
 import type { Game, Log, UserList } from "../../types";
 
 export interface BackupData {
-  version:  1;
+  version: 1;
   exported: string;
-  games:    Game[];
-  logs:     Log[];
-  lists:    UserList[];
+  games: Game[];
+  logs: Log[];
+  lists: UserList[];
 }
 
 export const BackupRepo = {
@@ -18,7 +18,7 @@ export const BackupRepo = {
       db.lists.toArray(),
     ]);
     const backup: BackupData = {
-      version:  1,
+      version: 1,
       exported: new Date().toISOString(),
       games,
       logs,
@@ -39,5 +39,5 @@ export const BackupRepo = {
       await db.logs.bulkPut(data.logs);
       await db.lists.bulkPut(data.lists);
     });
-  }
+  },
 };

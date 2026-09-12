@@ -8,6 +8,7 @@ import { db } from "../db/schema";
 import { useLiveRegion } from "../hooks/useLiveRegion";
 import { parseLog } from "../services/ai";
 import type { Log } from "../types";
+import { Button } from "../components/ui/Button";
 
 interface GlobalSearchProps {
   onGameAdded?: (igdbId: number, prefill?: Partial<Log>) => void;
@@ -20,7 +21,7 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<CatalogGame[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const [nlMode, setNlMode] = useState(false);
   const [quickLogLoading, setQuickLogLoading] = useState(false);
   const [prefill, setPrefill] = useState<Partial<Log>>({});
@@ -56,7 +57,7 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
       setLoading(false);
       return;
     }
-    
+
     if (nlMode) return; // handled by submit
 
     setLoading(true);
@@ -73,13 +74,15 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
         setLoading(false);
       }
     );
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [debouncedQuery, nlMode]);
 
   const handleNlSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || quickLogLoading) return;
-    
+
     setQuickLogLoading(true);
     try {
       const res = await parseLog(query);
@@ -102,7 +105,8 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
     inputRef.current?.focus();
   };
 
-  const libraryIds = useLiveQuery(() => db.games.toCollection().primaryKeys()) as number[] | undefined;
+  const libraryIds = useLiveQuery(() => db.games.toCollection().primaryKeys()) as
+    number[] | undefined;
   const librarySet = new Set(libraryIds ?? []);
 
   // Expose global open event
@@ -116,10 +120,27 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ position: "absolute", top: 12, right: 32, zIndex: 1000, width: 260, WebkitAppRegion: "no-drag" }}>
+    <div
+      ref={containerRef}
+      style={{
+        position: "absolute",
+        top: 12,
+        right: 32,
+        zIndex: 1000,
+        width: 260,
+        WebkitAppRegion: "no-drag",
+      }}
+    >
       {nlMode ? (
-        <form onSubmit={handleNlSubmit} style={{ position: "relative", display: "flex", width: "100%" }}>
-          <Sparkles size={14} color="var(--apple-accent)" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }} />
+        <form
+          onSubmit={handleNlSubmit}
+          style={{ position: "relative", display: "flex", width: "100%" }}
+        >
+          <Sparkles
+            size={14}
+            color="var(--apple-accent)"
+            style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}
+          />
           <input
             ref={inputRef}
             type="text"
@@ -146,25 +167,64 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
               WebkitAppRegion: "no-drag",
             }}
           />
-          {quickLogLoading && <Loader2 size={14} color="var(--apple-accent)" className="animate-spin" style={{ position: "absolute", right: 30, top: "50%", transform: "translateY(-50%)" }} />}
-          <button type="button" onClick={() => { setNlMode(false); setQuery(""); }} style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", background: "transparent", border: "none", color: "var(--apple-tertiary-label)", cursor: "pointer", display: "flex", padding: "var(--space-1)"}}>
-            <X size={14} />
-          </button>
+          {quickLogLoading && (
+            <Loader2
+              size={14}
+              color="var(--apple-accent)"
+              className="animate-spin"
+              style={{ position: "absolute", right: 30, top: "50%", transform: "translateY(-50%)" }}
+            />
+          )}
+          <Button
+            type="button"
+            onClick={() => {
+              setNlMode(false);
+              setQuery("");
+            }}
+            aria-label="Exit natural language log mode"
+            style={{
+              position: "absolute",
+              right: 6,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "transparent",
+              border: "none",
+              color: "var(--apple-tertiary-label)",
+              cursor: "pointer",
+              display: "flex",
+              padding: "var(--space-1)",
+            }}
+          >
+            <X size={14} aria-hidden="true" />
+          </Button>
         </form>
       ) : (
         <div style={{ position: "relative", width: "100%" }}>
-          <Search size={13} color="var(--apple-tertiary-label)" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+          <Search
+            size={13}
+            color="var(--apple-tertiary-label)"
+            style={{
+              position: "absolute",
+              left: 10,
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none",
+            }}
+          />
           <input
             ref={inputRef}
             type="text"
-            placeholder="Search IGDB catalog to add a game… (Enter for full results)"
-            title="Search external IGDB catalog to add new games to your library"
+            placeholder="Quick add game... (Enter for bulk search)"
+            title="Quick add games to your library"
+            aria-label="Quick Add search"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
               if (!isOpen && e.target.value) setIsOpen(true);
             }}
-            onFocus={() => { if (query) setIsOpen(true); }}
+            onFocus={() => {
+              if (query) setIsOpen(true);
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && debouncedQuery.trim()) {
                 e.preventDefault();
@@ -189,40 +249,80 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
             }}
           />
           {query && (
-            <button type="button" onClick={handleClear} style={{ position: "absolute", right: 30, top: "50%", transform: "translateY(-50%)", background: "transparent", border: "none", color: "var(--apple-tertiary-label)", cursor: "pointer", display: "flex", padding: "var(--space-1)"}}>
-              <X size={14} />
-            </button>
+            <Button
+              type="button"
+              onClick={handleClear}
+              aria-label="Clear search"
+              style={{
+                position: "absolute",
+                right: 30,
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "transparent",
+                border: "none",
+                color: "var(--apple-tertiary-label)",
+                cursor: "pointer",
+                display: "flex",
+                padding: "var(--space-1)",
+              }}
+            >
+              <X size={14} aria-hidden="true" />
+            </Button>
           )}
-          <button
+          <Button
             type="button"
-            onClick={() => { setNlMode(true); setIsOpen(true); inputRef.current?.focus(); }}
+            onClick={() => {
+              setNlMode(true);
+              setIsOpen(true);
+              inputRef.current?.focus();
+            }}
             title="Natural Language Log"
-            style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", background: "transparent", color: "var(--apple-tertiary-label)", border: "none", borderRadius: "var(--radius-sm)", padding: "var(--space-1)", cursor: "pointer", display: "flex" }}
+            style={{
+              position: "absolute",
+              right: 6,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "transparent",
+              color: "var(--apple-tertiary-label)",
+              border: "none",
+              borderRadius: "var(--radius-sm)",
+              padding: "var(--space-1)",
+              cursor: "pointer",
+              display: "flex",
+            }}
           >
             <Sparkles size={14} />
-          </button>
+          </Button>
         </div>
       )}
 
       {/* Dropdown */}
       {isOpen && (query || loading) && (
-        <div style={{
-          position: "absolute",
-          top: "100%",
-          left: 0,
-          right: 0,
-          marginTop: "var(--space-2)",
-          background: "var(--apple-window-bg)",
-          border: "1px solid var(--apple-separator)",
-          borderRadius: "var(--radius-lg)",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-          maxHeight: 400,
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            right: 0,
+            marginTop: "var(--space-2)",
+            background: "var(--apple-window-bg)",
+            border: "1px solid var(--apple-separator)",
+            borderRadius: "var(--radius-lg)",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+            maxHeight: 400,
+            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           {loading ? (
-            <div style={{ padding: "var(--space-5)", textAlign: "center", color: "var(--apple-tertiary-label)" }}>
+            <div
+              style={{
+                padding: "var(--space-5)",
+                textAlign: "center",
+                color: "var(--apple-tertiary-label)",
+              }}
+            >
               <Loader2 size={20} className="animate-spin" style={{ margin: "0 auto" }} />
             </div>
           ) : results.length > 0 ? (
@@ -234,7 +334,10 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
                 onAdd={async () => {
                   try {
                     await GamesRepo.addFromCatalog(game, "Backlog");
-                    onGameAdded?.(game.igdbId, Object.keys(prefill).length > 0 ? prefill : undefined);
+                    onGameAdded?.(
+                      game.igdbId,
+                      Object.keys(prefill).length > 0 ? prefill : undefined
+                    );
                     setIsOpen(false);
                   } catch (e) {
                     console.error("Failed to add:", e);
@@ -247,7 +350,14 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
               />
             ))
           ) : (
-            <div style={{ padding: "var(--space-5)", textAlign: "center", color: "var(--apple-tertiary-label)", fontSize: "var(--font-size-base)"}}>
+            <div
+              style={{
+                padding: "var(--space-5)",
+                textAlign: "center",
+                color: "var(--apple-tertiary-label)",
+                fontSize: "var(--font-size-base)",
+              }}
+            >
               No games found for "{debouncedQuery}"
             </div>
           )}
@@ -257,7 +367,17 @@ export function GlobalSearch({ onGameAdded }: GlobalSearchProps) {
   );
 }
 
-function ResultRow({ game, inLibrary, onAdd, onClick }: { game: CatalogGame; inLibrary: boolean; onAdd: () => Promise<void>; onClick: () => void }) {
+function ResultRow({
+  game,
+  inLibrary,
+  onAdd,
+  onClick,
+}: {
+  game: CatalogGame;
+  inLibrary: boolean;
+  onAdd: () => Promise<void>;
+  onClick: () => void;
+}) {
   const [adding, setAdding] = useState(false);
   const [hovered, setHovered] = useState(false);
 
@@ -276,30 +396,74 @@ function ResultRow({ game, inLibrary, onAdd, onClick }: { game: CatalogGame; inL
         cursor: "pointer",
       }}
     >
-      <div style={{ width: 32, height: 44, borderRadius: "var(--radius-sm)", background: "var(--apple-tertiary-bg)", overflow: "hidden", flexShrink: 0 }}>
-        {game.coverUrl && <img src={game.coverUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+      <div
+        style={{
+          width: 32,
+          height: 44,
+          borderRadius: "var(--radius-sm)",
+          background: "var(--apple-tertiary-bg)",
+          overflow: "hidden",
+          flexShrink: 0,
+        }}
+      >
+        {game.coverUrl && (
+          <img
+            src={game.coverUrl}
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        )}
       </div>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-        <h3 style={{ fontSize: "var(--font-size-base)", fontWeight: 600, color: "var(--apple-label)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <h3
+          style={{
+            fontSize: "var(--font-size-base)",
+            fontWeight: 600,
+            color: "var(--apple-label)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
           {game.title}
         </h3>
-        <p style={{ fontSize: 11, color: "var(--apple-secondary-label)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <p
+          style={{
+            fontSize: 11,
+            color: "var(--apple-secondary-label)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
           {game.releaseYear} • {game.developer}
         </p>
       </div>
-      <button
-        onClick={(e) => { e.stopPropagation(); setAdding(true); onAdd().finally(() => setAdding(false)); }}
+      <Button
+        onClick={(e) => {
+          e.stopPropagation();
+          setAdding(true);
+          onAdd().finally(() => setAdding(false));
+        }}
         disabled={inLibrary || adding}
+        aria-label={inLibrary ? `${game.title} already in library` : `Add ${game.title} to library`}
         style={{
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 4,
-          padding: "var(--space-1) 10px", borderRadius: "var(--radius-md)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 4,
+          padding: "var(--space-1) 10px",
+          borderRadius: "var(--radius-md)",
           background: inLibrary ? "transparent" : "var(--apple-accent)",
           color: inLibrary ? "var(--apple-tertiary-label)" : "var(--apple-white)",
-          fontSize: "var(--font-size-sm)", fontWeight: 600, border: "none", cursor: inLibrary ? "default" : "pointer",
+          fontSize: "var(--font-size-sm)",
+          fontWeight: 600,
+          border: "none",
+          cursor: inLibrary ? "default" : "pointer",
         }}
       >
-        {inLibrary ? <Check size={12} /> : <Plus size={12} />}
-      </button>
+        {inLibrary ? <Check size={12} aria-hidden="true" /> : <Plus size={12} aria-hidden="true" />}
+      </Button>
     </div>
   );
 }

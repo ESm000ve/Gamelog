@@ -16,7 +16,7 @@ export async function exportData(): Promise<void> {
 
   const data: BackupData = {
     version: 1,
-    games: games.map(g => ({
+    games: games.map((g) => ({
       igdbId: g.igdbId,
       addedAt: g.addedAt,
       updatedAt: g.updatedAt,
@@ -75,7 +75,7 @@ export async function importData(
       await db.logs.clear();
       await db.lists.clear();
     }
-    
+
     // Merge logic: dexie .put() acts as an upsert (replace if exists, insert if new)
     // For lists, we'll just put them too. If they already exist, they are overwritten.
     await db.games.bulkPut(fullGames);

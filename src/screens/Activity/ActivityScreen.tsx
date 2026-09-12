@@ -1,32 +1,39 @@
 import { useState, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { db } from "../../db/schema";
 import { evaluateAchievements } from "../../services/achievements";
 import { ContributionHeatmap } from "./ContributionHeatmap";
 import { TimelineFeed } from "./TimelineFeed";
 import { AchievementsSection } from "./AchievementsSection";
 import { YearInReviewModal } from "./YearInReviewModal";
-import {
-  Calendar, Trophy, Sparkles,
-  ArrowRight, Loader2
-} from "lucide-react";
+import { Button } from "../../components/ui/Button";
+import { Calendar, Trophy, Sparkles, ArrowRight, Loader2 } from "lucide-react";
 
 export function ActivityScreen() {
   const [activeTab, setActiveTab] = useState<"journal" | "achievements">("journal");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [wrappedOpen, setWrappedOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const wrappedOpen = searchParams.get("year-in-review") === "true";
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (location.state && (location.state as { openYearInReview?: boolean }).openYearInReview) {
-      setWrappedOpen(true);
+      setSearchParams((prev) => {
+        prev.set("year-in-review", "true");
+        return prev;
+      });
+      navigate(location.pathname, { replace: true, state: {} });
     }
-    const handleOpen = () => setWrappedOpen(true);
+    const handleOpen = () =>
+      setSearchParams((prev) => {
+        prev.set("year-in-review", "true");
+        return prev;
+      });
     window.addEventListener("gamelog:open-year-in-review", handleOpen);
     return () => window.removeEventListener("gamelog:open-year-in-review", handleOpen);
-  }, [location.state]);
+  }, [location, navigate, setSearchParams]);
 
   const games = useLiveQuery(() => db.games.toArray()) ?? [];
   const logs = useLiveQuery(() => db.logs.toArray()) ?? [];
@@ -36,7 +43,15 @@ export function ActivityScreen() {
 
   if (games.length === 0 && logs.length === 0) {
     return (
-      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--space-10)"}}>
+      <main
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "var(--space-10)",
+        }}
+      >
         <div style={{ textAlign: "center", color: "var(--apple-secondary-label)" }}>
           <Loader2 size={32} className="animate-spin" style={{ margin: "0 auto var(--space-3)" }} />
           <div>Loading your activity journal...</div>
@@ -46,11 +61,33 @@ export function ActivityScreen() {
   }
 
   return (
-    <main style={{ flex: 1, overflowY: "auto", padding: "var(--space-10)", background: "var(--apple-bg)" }}>
-      <div style={{ maxWidth: 1040, margin: "0 auto", display: "flex", flexDirection: "column", gap: 32 }}>
-        
+    <main
+      style={{
+        flex: 1,
+        overflowY: "auto",
+        padding: "var(--space-10)",
+        background: "var(--apple-bg)",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1040,
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: 32,
+        }}
+      >
         {/* Header Title & Description */}
-        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
+        <header
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            flexWrap: "wrap",
+            gap: 16,
+          }}
+        >
           <div>
             <h1
               style={{
@@ -65,16 +102,18 @@ export function ActivityScreen() {
               Activity
             </h1>
             <p style={{ fontSize: 15, color: "var(--apple-secondary-label)", margin: 0 }}>
-              Track your daily gameplay contributions, review your annual journey, and unlock library badges.
+              Track your daily gameplay contributions, review your annual journey, and unlock
+              library badges.
             </p>
           </div>
 
           {/* Year in Review Launcher Banner CTA */}
-          <button
+          <Button
             type="button"
             onClick={() => setWrappedOpen(true)}
             style={{
-              background: "linear-gradient(135deg, var(--apple-blue) 0%, var(--apple-purple) 50%, var(--apple-pink) 100%)",
+              background:
+                "linear-gradient(135deg, var(--apple-blue) 0%, var(--apple-purple) 50%, var(--apple-pink) 100%)",
               border: "none",
               borderRadius: 16,
               padding: "var(--space-3) var(--space-5)",
@@ -95,24 +134,47 @@ export function ActivityScreen() {
               e.currentTarget.style.boxShadow = "0 8px 24px rgba(191, 90, 242, 0.35)";
             }}
           >
-            <div style={{ width: 32, height: 32, borderRadius: 10, background: "rgba(255, 255, 255, 0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                background: "rgba(255, 255, 255, 0.2)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Sparkles size={18} color="var(--apple-white)" />
             </div>
             <div style={{ textAlign: "left" }}>
-              <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", opacity: 0.9 }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  opacity: 0.9,
+                }}
+              >
                 Annual Wrap-Up
               </div>
-              <div style={{ fontSize: 15, fontWeight: 800 }}>
-                Launch {currentYear} Wrapped
-              </div>
+              <div style={{ fontSize: 15, fontWeight: 800 }}>Launch {currentYear} Wrapped</div>
             </div>
-            <ArrowRight size={18} style={{ marginLeft: "var(--space-1)"}} />
-          </button>
+            <ArrowRight size={18} style={{ marginLeft: "var(--space-1)" }} />
+          </Button>
         </header>
 
         {/* Navigation Tabs */}
-        <div style={{ display: "flex", gap: 12, borderBottom: "1px solid var(--apple-separator)", paddingBottom: "var(--space-4)"}}>
-          <button
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            borderBottom: "1px solid var(--apple-separator)",
+            paddingBottom: "var(--space-4)",
+          }}
+        >
+          <Button
             type="button"
             onClick={() => {
               setActiveTab("journal");
@@ -136,13 +198,14 @@ export function ActivityScreen() {
           >
             <Calendar size={18} />
             Play Journal & Timeline
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
             onClick={() => setActiveTab("achievements")}
             style={{
-              background: activeTab === "achievements" ? "var(--apple-accent)" : "var(--apple-card-bg)",
+              background:
+                activeTab === "achievements" ? "var(--apple-accent)" : "var(--apple-card-bg)",
               color: activeTab === "achievements" ? "var(--apple-white)" : "var(--apple-label)",
               border: "1px solid var(--apple-separator)",
               borderRadius: 12,
@@ -154,12 +217,13 @@ export function ActivityScreen() {
               gap: 8,
               cursor: "pointer",
               transition: "all 150ms ease",
-              boxShadow: activeTab === "achievements" ? "0 4px 12px rgba(48, 209, 88, 0.3)" : "none",
+              boxShadow:
+                activeTab === "achievements" ? "0 4px 12px rgba(48, 209, 88, 0.3)" : "none",
             }}
           >
             <Trophy size={18} />
             Achievements & Milestones
-          </button>
+          </Button>
         </div>
 
         {/* Tab Content */}
@@ -181,13 +245,17 @@ export function ActivityScreen() {
         ) : (
           <AchievementsSection achievements={achievements} />
         )}
-
       </div>
 
       {/* Year in Review Modal */}
       {wrappedOpen && (
         <YearInReviewModal
-          onClose={() => setWrappedOpen(false)}
+          onClose={() =>
+            setSearchParams((prev) => {
+              prev.delete("year-in-review");
+              return prev;
+            })
+          }
           games={games}
           logs={logs}
         />

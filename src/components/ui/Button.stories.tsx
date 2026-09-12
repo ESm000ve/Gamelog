@@ -18,7 +18,8 @@ const meta = {
     size: {
       control: "select",
       options: ["sm", "md", "lg"],
-      description: "Controls padding, minHeight, fontSize, and borderRadius — all token-driven per size step.",
+      description:
+        "Controls padding, minHeight, fontSize, and borderRadius — all token-driven per size step.",
     },
     loading: {
       control: "boolean",
@@ -197,9 +198,15 @@ export const AllSizes: Story = {
   parameters: { layout: "padded", controls: { disable: true } },
   render: () => (
     <div style={{ display: "flex", gap: "var(--space-4)", alignItems: "center" }}>
-      <Button variant="primary" size="sm">Small</Button>
-      <Button variant="primary" size="md">Medium</Button>
-      <Button variant="primary" size="lg">Large</Button>
+      <Button variant="primary" size="sm">
+        Small
+      </Button>
+      <Button variant="primary" size="md">
+        Medium
+      </Button>
+      <Button variant="primary" size="lg">
+        Large
+      </Button>
     </div>
   ),
 };
@@ -209,8 +216,12 @@ export const AllStates: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "var(--space-4)", flexWrap: "wrap", alignItems: "center" }}>
       <Button variant="primary">Default</Button>
-      <Button variant="primary" loading>Loading</Button>
-      <Button variant="primary" disabled>Disabled</Button>
+      <Button variant="primary" loading>
+        Loading
+      </Button>
+      <Button variant="primary" disabled>
+        Disabled
+      </Button>
     </div>
   ),
 };

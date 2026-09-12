@@ -6,13 +6,21 @@ import type { Status } from "../types";
 export type PlatformType = "PSN" | "Xbox" | "GOG";
 
 export function parsePlatformList(content: string, platform: PlatformType): ImportedGame[] {
-  const lines = content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const lines = content
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
   const results: ImportedGame[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     // Check if it's a CSV header or empty line
-    if (i === 0 && (line.toLowerCase().includes("title") || line.toLowerCase().includes("game") || line.toLowerCase().includes("name"))) {
+    if (
+      i === 0 &&
+      (line.toLowerCase().includes("title") ||
+        line.toLowerCase().includes("game") ||
+        line.toLowerCase().includes("name"))
+    ) {
       continue;
     }
 
@@ -63,7 +71,8 @@ export async function matchPlatformGames(
             results.push({
               imported: g,
               igdbGame: searchRes[0],
-              confidence: searchRes[0].title.toLowerCase() === g.sourceName.toLowerCase() ? "high" : "low",
+              confidence:
+                searchRes[0].title.toLowerCase() === g.sourceName.toLowerCase() ? "high" : "low",
             });
           } else {
             results.push({
@@ -73,6 +82,7 @@ export async function matchPlatformGames(
             });
           }
         } catch (err) {
+          console.error("Failed to fetch IGDB data for imported title", err);
           results.push({
             imported: g,
             igdbGame: null,
@@ -123,7 +133,8 @@ export async function importMatchedPlatformGames(
       }
 
       const existingLog = await db.logs.get(igdbGame.igdbId);
-      const platformName = platform === "PSN" ? "PlayStation" : platform === "Xbox" ? "Xbox" : "PC (GOG)";
+      const platformName =
+        platform === "PSN" ? "PlayStation" : platform === "Xbox" ? "Xbox" : "PC (GOG)";
 
       if (existingLog) {
         const updates: any = { updatedAt: now };

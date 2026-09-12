@@ -13,7 +13,8 @@ export function generateMarkdownList(title: string, entries: { game: Game; log?:
     const ratingStr = log?.rating && log.rating > 0 ? ` ⭐ **${log.rating}/10**` : "";
     const statusStr = log?.status || "Unlogged";
     const timeStr = log?.timePlayed && log.timePlayed > 0 ? ` • ⏱️ ${log.timePlayed}h` : "";
-    const platStr = log?.platform || game.platforms?.[0] ? ` • 🖥️ ${log?.platform || game.platforms?.[0]}` : "";
+    const platStr =
+      log?.platform || game.platforms?.[0] ? ` • 🖥️ ${log?.platform || game.platforms?.[0]}` : "";
 
     lines.push(`- ${checkbox} **${game.title}**${ratingStr} *(${statusStr}${timeStr}${platStr})*`);
   }
@@ -45,16 +46,16 @@ export async function generateShareCardCanvas(
   // Draw background gradient
   const grad = ctx.createLinearGradient(0, 0, 800, 520);
   grad.addColorStop(0, "#1e1e1e");
-  grad.addColorStop(1, "#121214");
+  grad.addColorStop(1, "var(--apple-bg)");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 800, 520);
 
   // Draw accent top border
-  ctx.fillStyle = "#5e5ce6";
+  ctx.fillStyle = "var(--apple-indigo)";
   ctx.fillRect(0, 0, 800, 6);
 
   // Draw Title
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "var(--apple-white)";
   ctx.font = "bold 32px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
   ctx.fillText(`🎮 ${title}`, 40, 60);
 
@@ -62,9 +63,12 @@ export async function generateShareCardCanvas(
   const totalGames = entries.length;
   const playedGames = entries.filter((e) => e.log?.status === "Played").length;
   const ratedGames = entries.filter((e) => e.log?.rating && e.log.rating > 0);
-  const avgRating = ratedGames.length > 0
-    ? (ratedGames.reduce((acc, e) => acc + (e.log?.rating || 0), 0) / ratedGames.length).toFixed(1)
-    : "N/A";
+  const avgRating =
+    ratedGames.length > 0
+      ? (ratedGames.reduce((acc, e) => acc + (e.log?.rating || 0), 0) / ratedGames.length).toFixed(
+          1
+        )
+      : "N/A";
 
   ctx.fillStyle = "rgba(235, 235, 245, 0.7)";
   ctx.font = "600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
@@ -109,15 +113,16 @@ export async function generateShareCardCanvas(
         ctx.drawImage(img, x, y, cardW, cardH);
         ctx.restore();
       } catch (err) {
+        console.warn("Could not draw cover image", err);
         // Fallback title on cover
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = "var(--apple-white)";
         ctx.font = "12px sans-serif";
         ctx.fillText(game.title.slice(0, 16), x + 8, y + cardH / 2);
       }
     }
 
     // Draw game title below cover
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = "var(--apple-white)";
     ctx.font = "600 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
     const titleText = game.title.length > 16 ? game.title.slice(0, 15) + "…" : game.title;
     ctx.fillText(titleText, x, y + cardH + 24);
@@ -137,7 +142,10 @@ export async function generateShareCardCanvas(
   return canvas;
 }
 
-export function downloadCanvasImage(canvas: HTMLCanvasElement, filename: string = "my-game-list.png"): void {
+export function downloadCanvasImage(
+  canvas: HTMLCanvasElement,
+  filename: string = "my-game-list.png"
+): void {
   const url = canvas.toDataURL("image/png");
   const a = document.createElement("a");
   a.href = url;
@@ -159,11 +167,13 @@ export async function copyCanvasImageToClipboard(canvas: HTMLCanvasElement): Pro
           await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
           resolve(true);
         } catch (err) {
+          console.error("Failed to load image", err);
           resolve(false);
         }
       });
     });
   } catch (err) {
+    console.error("Failed to generate list preview", err);
     return false;
   }
 }

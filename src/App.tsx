@@ -1,9 +1,16 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { BrowserRouter, Routes, Route, useNavigate, useLocation, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { Sidebar } from "./shell/Sidebar";
 import { LibraryScreen } from "./screens/Library/LibraryScreen";
-import { DebugStoreScreen } from "./screens/DebugStoreScreen";
+import { DebugStoreScreen } from "./screens/DebugStore/DebugStoreScreen";
 import { GlobalSearch } from "./shell/GlobalSearch";
 import { AddGameModal } from "./screens/Library/AddGameModal";
 import { LogEditor } from "./screens/LogEditor";
@@ -14,32 +21,31 @@ import { SingleListScreen } from "./screens/Lists/SingleListScreen";
 import { AddToListSheet } from "./screens/Lists/AddToListSheet";
 import { StatsScreen } from "./screens/Stats/StatsScreen";
 import { RecommendScreen } from "./screens/Recommend/RecommendScreen";
-import { SettingsScreen } from "./screens/SettingsScreen";
-import { ImportReviewScreen } from "./screens/ImportReviewScreen";
-import { SearchScreen } from "./screens/SearchScreen";
+import { SettingsScreen } from "./screens/Settings";
+import { ImportReviewScreen } from "./screens/ImportReview/ImportReviewScreen";
+import { SearchScreen } from "./screens/Search";
 import { SystemsScreen } from "./screens/Systems/SystemsScreen";
 import { FriendsScreen } from "./screens/Friends/FriendsScreen";
 import { ActivityScreen } from "./screens/Activity/ActivityScreen";
-import { CommandPalette } from "./components/CommandPalette";
+import { CommandPalette } from "./components/layout";
 import { applyTheme } from "./services/theme";
 import { db } from "./db/schema";
 import { GamesRepo } from "./db/repositories/GamesRepo";
 import type { Game, Log } from "./types";
 import "./styles/index.css";
 
-interface LogEditorTarget { game: Game; log: Log; prefill?: Partial<Log>; }
-interface AddToListTarget { igdbId: number; title: string; }
+interface LogEditorTarget {
+  game: Game;
+  log: Log;
+  prefill?: Partial<Log>;
+}
 
 function SingleListRoute({ onOpenGame }: { onOpenGame: (igdbId: number) => void }) {
   const { listId } = useParams();
   const navigate = useNavigate();
   if (!listId) return null;
   return (
-    <SingleListScreen
-      listId={listId}
-      onBack={() => navigate("/lists")}
-      onOpenGame={onOpenGame}
-    />
+    <SingleListScreen listId={listId} onBack={() => navigate("/lists")} onOpenGame={onOpenGame} />
   );
 }
 
@@ -50,6 +56,34 @@ function AppInner() {
   useEffect(() => {
     applyTheme();
   }, []);
+
+  // Dynamic page title — WCAG 2.4.2
+  useEffect(() => {
+    const PATH_TITLES: Record<string, string> = {
+      "/": "Library",
+      "/lists": "Lists",
+      "/systems": "Browse Systems",
+      "/recommend": "What to Play",
+      "/activity": "Activity",
+      "/friends": "Friends",
+      "/stats": "Stats",
+      "/settings": "Settings",
+      "/search": "Search",
+      "/import/steam": "Import from Steam",
+    };
+    const base = "gamelog";
+    // Match dynamic routes first, fall back to static map
+    if (location.pathname.startsWith("/game/")) {
+      document.title = `Game Detail — ${base}`;
+    } else if (location.pathname.startsWith("/lists/")) {
+      document.title = `List — ${base}`;
+    } else if (location.pathname.startsWith("/systems/")) {
+      document.title = `System — ${base}`;
+    } else {
+      const label = PATH_TITLES[location.pathname];
+      document.title = label ? `${label} — ${base}` : base;
+    }
+  }, [location.pathname]);
 
   // Run backfill for missing embeddings and dates
   useEffect(() => {
@@ -71,11 +105,12 @@ function AppInner() {
         let isScrollable = false;
         while (target && target !== document.body) {
           const style = window.getComputedStyle(target);
-          if (style.overflowX === 'auto' || style.overflowX === 'scroll') {
+          if (style.overflowX === "auto" || style.overflowX === "scroll") {
             if (target.scrollWidth > target.clientWidth) {
               // Check if we are not at the extreme edge
               if (e.deltaX < 0 && target.scrollLeft > 0) isScrollable = true;
-              if (e.deltaX > 0 && target.scrollLeft + target.clientWidth < target.scrollWidth - 1) isScrollable = true;
+              if (e.deltaX > 0 && target.scrollLeft + target.clientWidth < target.scrollWidth - 1)
+                isScrollable = true;
               if (isScrollable) break;
             }
           }
@@ -95,53 +130,139 @@ function AppInner() {
         }
       }
     };
-    
-    window.addEventListener('wheel', handleWheel, { passive: true });
-    return () => window.removeEventListener('wheel', handleWheel);
+
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    return () => window.removeEventListener("wheel", handleWheel);
   }, [navigate]);
 
-  const [addGameOpen,     setAddGameOpen]     = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const addGameOpen = searchParams.get("add-game") === "true";
   const [logEditorTarget, setLogEditorTarget] = useState<LogEditorTarget | null>(null);
-  const [addToListTarget, setAddToListTarget] = useState<AddToListTarget | null>(null);
+  const [prefillState, setPrefillState] = useState<Partial<Log> | undefined>(undefined);
+  const addToListIgdbId = searchParams.get("add-to-list");
+  const addToListTitle = searchParams.get("list-title") || "";
 
   useEffect(() => {
-    const handleOpenAdd = () => setAddGameOpen(true);
+    const handleOpenAdd = () => {
+      setSearchParams((prev) => {
+        prev.set("add-game", "true");
+        return prev;
+      });
+    };
     window.addEventListener("gamelog:open-add-game", handleOpenAdd);
     return () => window.removeEventListener("gamelog:open-add-game", handleOpenAdd);
-  }, []);
+  }, [setSearchParams]);
 
   const openAddGame = () => {
-    setAddGameOpen(true);
+    setSearchParams((prev) => {
+      prev.set("add-game", "true");
+      return prev;
+    });
   };
 
+  const closeAddGame = () => {
+    setSearchParams((prev) => {
+      prev.delete("add-game");
+      return prev;
+    });
+  };
+
+  const logIdParam = searchParams.get("log");
+  useEffect(() => {
+    let mounted = true;
+    if (logIdParam) {
+      const id = parseInt(logIdParam, 10);
+      if (!isNaN(id)) {
+        Promise.all([db.games.get(id), db.logs.get(id)]).then(([game, log]) => {
+          if (mounted && game && log) {
+            setLogEditorTarget({ game, log, prefill: prefillState });
+          }
+        });
+      }
+    } else {
+      setLogEditorTarget(null);
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [logIdParam, prefillState]);
+
   const openLogEditor = async (igdbId: number, prefill?: Partial<Log>) => {
-    const [game, log] = await Promise.all([db.games.get(igdbId), db.logs.get(igdbId)]);
-    if (game && log) setLogEditorTarget({ game, log, prefill });
+    setPrefillState(prefill);
+    setSearchParams((prev) => {
+      prev.set("log", igdbId.toString());
+      return prev;
+    });
+  };
+
+  const closeLogEditor = () => {
+    setSearchParams((prev) => {
+      prev.delete("log");
+      return prev;
+    });
+    setPrefillState(undefined);
   };
 
   const openAddToList = (igdbId: number, title: string) => {
-    setAddToListTarget({ igdbId, title });
+    setSearchParams((prev) => {
+      prev.set("add-to-list", igdbId.toString());
+      prev.set("list-title", title);
+      return prev;
+    });
+  };
+
+  const closeAddToList = () => {
+    setSearchParams((prev) => {
+      prev.delete("add-to-list");
+      prev.delete("list-title");
+      return prev;
+    });
   };
 
   const openGame = (igdbId: number) => navigate(`/game/${igdbId}`);
 
-
-
   return (
-    <div style={{ display: "flex", width: "100%", height: "100vh", overflow: "hidden", background: "var(--apple-window-bg)", fontFamily: "var(--apple-font-text)" }}>
+    <div className="w-full h-full flex-row" style={{ overflow: "hidden" }}>
+      {/* Skip to main content — WCAG 2.4.1 */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+
       <Sidebar onAddGame={openAddGame} />
 
       <Routes>
-        <Route path="/" element={<LibraryScreen onAddGame={openAddGame} onOpenLog={openLogEditor} onOpenGame={openGame} />} />
-        <Route path="/search" element={<SearchScreen onOpenGame={openGame} onOpenLog={openLogEditor} />} />
-        <Route path="/lists" element={<ListsScreen onOpenList={(id) => navigate(`/lists/${id}`)} />} />
+        <Route
+          path="/"
+          element={
+            <LibraryScreen
+              onAddGame={openAddGame}
+              onOpenLog={openLogEditor}
+              onOpenGame={openGame}
+            />
+          }
+        />
+        <Route
+          path="/search"
+          element={<SearchScreen onOpenGame={openGame} onOpenLog={openLogEditor} />}
+        />
+        <Route
+          path="/lists"
+          element={<ListsScreen onOpenList={(id) => navigate(`/lists/${id}`)} />}
+        />
         <Route path="/lists/:listId" element={<SingleListRoute onOpenGame={openGame} />} />
         <Route path="/stats" element={<StatsScreen />} />
         <Route path="/recommend" element={<RecommendScreen />} />
         <Route path="/activity" element={<ActivityScreen />} />
         <Route path="/friends" element={<FriendsScreen />} />
-        <Route path="/systems" element={<SystemsScreen onOpenGame={openGame} onOpenLog={openLogEditor} />} />
-        <Route path="/systems/:platformId" element={<SystemsScreen onOpenGame={openGame} onOpenLog={openLogEditor} />} />
+        <Route
+          path="/systems"
+          element={<SystemsScreen onOpenGame={openGame} onOpenLog={openLogEditor} />}
+        />
+        <Route
+          path="/systems/:platformId"
+          element={<SystemsScreen onOpenGame={openGame} onOpenLog={openLogEditor} />}
+        />
         <Route path="/settings" element={<SettingsScreen />} />
         <Route path="/import/steam" element={<ImportReviewScreen />} />
         <Route path="/debug" element={<DebugStoreScreen />} />
@@ -165,9 +286,9 @@ function AppInner() {
       {/* Add Game modal */}
       {addGameOpen && (
         <AddGameModal
-          onClose={() => setAddGameOpen(false)}
+          onClose={closeAddGame}
           onGameAdded={(igdbId, prefill) => {
-            setAddGameOpen(false);
+            closeAddGame();
             openLogEditor(igdbId, prefill);
           }}
         />
@@ -179,17 +300,17 @@ function AppInner() {
           game={logEditorTarget.game}
           log={logEditorTarget.log}
           prefill={logEditorTarget.prefill}
-          onClose={() => setLogEditorTarget(null)}
-          onDelete={() => setLogEditorTarget(null)}
+          onClose={closeLogEditor}
+          onDelete={closeLogEditor}
         />
       )}
 
       {/* Add to list sheet */}
-      {addToListTarget && (
+      {addToListIgdbId && (
         <AddToListSheet
-          igdbId={addToListTarget.igdbId}
-          title={addToListTarget.title}
-          onClose={() => setAddToListTarget(null)}
+          igdbId={parseInt(addToListIgdbId, 10)}
+          title={addToListTitle}
+          onClose={closeAddToList}
         />
       )}
 

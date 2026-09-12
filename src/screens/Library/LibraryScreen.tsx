@@ -13,28 +13,36 @@ import { fetchDealsForWishlist } from "../../services/priceTracker";
 import { SpotlightBanner } from "../../components/SpotlightBanner";
 import { Button } from "../../components/ui/Button";
 import type { Status } from "../../types";
+import "./LibraryScreen.css";
 
 // ─── Sort options ──────────────────────────────────────────────────────────────
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "recent",     label: "Recently added" },
-  { value: "rating",     label: "Rating"         },
-  { value: "title-asc",  label: "Title (A-Z)"    },
-  { value: "title-desc", label: "Title (Z-A)"    },
-  { value: "year-desc",  label: "Release year (newest first)" },
-  { value: "year-asc",   label: "Release year (oldest first)" },
-  { value: "time",       label: "Time played"    },
+  { value: "recent", label: "Recently added" },
+  { value: "rating", label: "Rating" },
+  { value: "title-asc", label: "Title (A-Z)" },
+  { value: "title-desc", label: "Title (Z-A)" },
+  { value: "year-desc", label: "Release year (newest first)" },
+  { value: "year-asc", label: "Release year (oldest first)" },
+  { value: "time", label: "Time played" },
 ];
-
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
-export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?: () => void; onOpenLog?: (igdbId: number) => void; onOpenGame?: (igdbId: number) => void }) {
+export function LibraryScreen({
+  onAddGame,
+  onOpenLog,
+  onOpenGame,
+}: {
+  onAddGame?: () => void;
+  onOpenLog?: (igdbId: number) => void;
+  onOpenGame?: (igdbId: number) => void;
+}) {
   const [filterSpec, setFilterSpec] = useState<FilterSpec>({});
-  const [sort,         setSort]         = useState<SortKey>("year-asc");
-  const [sortOpen,     setSortOpen]     = useState(false);
-  const [shareOpen,    setShareOpen]    = useState(false);
-  const [search,       setSearch]       = useState("");
+  const [sort, setSort] = useState<SortKey>("year-asc");
+  const [sortOpen, setSortOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "table">(() => {
     return (localStorage.getItem("libraryViewMode") as any) || "grid";
@@ -59,11 +67,9 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
     return () => window.removeEventListener("click", handle);
   }, [sortOpen]);
 
-
-
   const navigate = useNavigate();
   const entries = useLibrary({ filters: filterSpec, sort, search: debouncedSearch });
-  const counts  = useLibraryCounts();
+  const counts = useLibraryCounts();
   const { announce } = useLiveRegion();
 
   useEffect(() => {
@@ -73,8 +79,13 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
   }, [entries?.length, announce]);
 
   useEffect(() => {
-    if (filterSpec.status && filterSpec.status.includes("Wishlist") && entries && entries.length > 0) {
-      const games = entries.map(e => e.game);
+    if (
+      filterSpec.status &&
+      filterSpec.status.includes("Wishlist") &&
+      entries &&
+      entries.length > 0
+    ) {
+      const games = entries.map((e) => e.game);
       fetchDealsForWishlist(games);
     }
   }, [entries, filterSpec.status]);
@@ -91,83 +102,33 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
   };
 
   return (
-    <main
-      id="main-content"
-      style={{
-        flex:          1,
-        display:       "flex",
-        flexDirection: "column",
-        overflow:      "hidden",
-        minWidth:      0,
-      }}
-    >
+    <main id="main-content" className="library-screen">
       {/* ── Toolbar ── */}
-      <div
-        style={{
-          flexShrink:           0,
-          display:              "flex",
-          alignItems:           "center",
-          justifyContent:       "space-between",
-          padding:              "var(--space-3) var(--space-8)",
-          background:           "var(--apple-toolbar-bg)",
-          backdropFilter:       "saturate(180%) blur(20px)",
-          WebkitBackdropFilter: "saturate(180%) blur(20px)",
-          borderBottom:         "1px solid var(--apple-separator)",
-          WebkitAppRegion:      "drag",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-          <h1
-            style={{
-              fontFamily:    "var(--apple-font-display)",
-              fontSize:      "var(--font-size-lg)",
-              fontWeight:    600,
-              color:         "var(--apple-label)",
-              letterSpacing: "-0.015em",
-              lineHeight:    1,
-            }}
-          >
-            Library
-          </h1>
-          <span style={{ color: "var(--apple-secondary-label)", fontSize: "var(--font-size-base)"}}>
+      <div className="library-toolbar glass-panel">
+        <div className="library-toolbar-title">
+          <h1 className="text-display">Library</h1>
+          <span className="text-muted">
             {totalCount} {totalCount === 1 ? "game" : "games"}
           </span>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 8, WebkitAppRegion: "no-drag" }}>
-
-
-        </div>
+        <div className="library-toolbar-actions"></div>
       </div>
 
       {/* ── Filter strip ── */}
-      <div
-        style={{
-          flexShrink:   0,
-          display:      "flex",
-          alignItems:   "center",
-          justifyContent: "space-between",
-          padding:      "var(--space-3) var(--space-8)",
-          borderBottom: "1px solid var(--apple-separator)",
-          position:     "relative",
-          zIndex:       10,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            overflowX: "auto",
-            flex: 1,
-            marginRight: "var(--space-3)",
-          }}
-        >
-          <div style={{ position: "relative" }}>
+      <div className="library-filter-strip">
+        <div className="library-search-container">
+          <div className="library-search-input">
             <Search
               size={13}
               color="var(--apple-tertiary-label)"
-              style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+              style={{
+                position: "absolute",
+                left: 10,
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+              }}
             />
             <input
               type="text"
@@ -175,55 +136,33 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Filter library"
-              style={{
-                paddingLeft: 30,
-                paddingRight: 10,
-                paddingTop: 6,
-                paddingBottom: 6,
-                borderRadius: "var(--radius-sm)",
-                background: "var(--apple-fill)",
-                border: "1px solid var(--apple-separator)",
-                color: "var(--apple-label)",
-                fontSize: "var(--font-size-base)",
-                width: 180,
-                fontWeight: 500,
-                outline: "none",
-              }}
             />
           </div>
           <ActiveFilterBadges spec={filterSpec} onChange={setFilterSpec} />
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+
+        <div className="library-actions-container">
           {/* Share button */}
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            type="button"
             onClick={() => setShareOpen(true)}
             title="Share & Export Library"
-            style={{ padding: "6px var(--space-3)", fontSize: "var(--font-size-base)", fontWeight: 500 }}
+            aria-label="Share & Export Library"
+            className="library-btn-outline"
           >
-            <Share2 size={14} color="var(--apple-accent)" />
+            <Share2 size={14} color="var(--apple-accent)" aria-hidden="true" />
             Share
-          </Button>
+          </button>
 
           {/* View mode toggle */}
-          <div style={{ display: "flex", background: "var(--apple-fill)", borderRadius: "var(--radius-md)", border: "1px solid var(--apple-separator)", padding: 2, gap: 2 }}>
+          <div className="library-view-toggle">
             <button
               type="button"
               onClick={() => handleViewModeChange("grid")}
               aria-label="Grid view"
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 28,
-                height: 26,
-                borderRadius: 6,
                 background: viewMode === "grid" ? "var(--apple-accent)" : "transparent",
                 color: viewMode === "grid" ? "var(--apple-white)" : "var(--apple-secondary-label)",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 120ms ease",
               }}
             >
               <Grid2x2 size={15} />
@@ -233,17 +172,8 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
               onClick={() => handleViewModeChange("table")}
               aria-label="Table view"
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 28,
-                height: 26,
-                borderRadius: 6,
                 background: viewMode === "table" ? "var(--apple-accent)" : "transparent",
                 color: viewMode === "table" ? "var(--apple-white)" : "var(--apple-secondary-label)",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 120ms ease",
               }}
             >
               <List size={15} />
@@ -253,25 +183,24 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
           {/* Sort dropdown */}
           <div style={{ position: "relative" }}>
             <button
-              onClick={(e) => { e.stopPropagation(); setSortOpen((v) => !v); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSortOpen((v) => !v);
+              }}
               aria-haspopup="listbox"
               aria-expanded={sortOpen}
+              aria-label={`Sort: ${currentSort.label}`}
+              className="library-sort-btn"
               style={{
-                display:      "flex",
-                alignItems:   "center",
-                gap:          6,
-                padding:      "6px var(--space-3)",
-                borderRadius: "var(--radius-md)",
-                border:       "1px solid var(--apple-separator)",
-                background:   sortOpen ? "var(--apple-accent)" : "var(--apple-fill)",
-                color:        sortOpen ? "white" : "var(--apple-label)",
-                fontSize:     "var(--font-size-base)",
-                fontWeight:   500,
-                transition:   "background 120ms ease",
-                cursor:       "pointer",
+                background: sortOpen ? "var(--apple-accent)" : "var(--apple-fill)",
+                color: sortOpen ? "white" : "var(--apple-label)",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "var(--apple-secondary-fill)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "var(--apple-fill)")}
+              onMouseEnter={(e) => {
+                if (!sortOpen) e.currentTarget.style.background = "var(--apple-secondary-fill)";
+              }}
+              onMouseLeave={(e) => {
+                if (!sortOpen) e.currentTarget.style.background = "var(--apple-fill)";
+              }}
             >
               Sort: {currentSort.label}
               <ChevronDown size={13} color="var(--apple-tertiary-label)" aria-hidden="true" />
@@ -287,44 +216,71 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
                 <div
                   role="listbox"
                   aria-label="Sort by"
+                  onKeyDown={(e) => {
+                    const options = SORT_OPTIONS;
+                    const currentIdx = options.findIndex((o) => o.value === sort);
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      const next = options[(currentIdx + 1) % options.length];
+                      setSort(next.value);
+                    } else if (e.key === "ArrowUp") {
+                      e.preventDefault();
+                      const prev = options[(currentIdx - 1 + options.length) % options.length];
+                      setSort(prev.value);
+                    } else if (e.key === "Escape") {
+                      setSortOpen(false);
+                    }
+                  }}
                   style={{
-                    position:     "absolute",
-                    right:        0,
-                    top:          "calc(100% + 4px)",
-                    zIndex:       100,
-                    background:   "var(--apple-tertiary-bg)",
-                    border:       "1px solid var(--apple-separator)",
+                    position: "absolute",
+                    right: 0,
+                    top: "calc(100% + 4px)",
+                    zIndex: 100,
+                    background: "var(--apple-tertiary-bg)",
+                    border: "1px solid var(--apple-separator)",
                     borderRadius: "var(--radius-xl)",
-                    minWidth:     176,
-                    padding:      "var(--space-1) 0",
-                    boxShadow:    "0 8px 32px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.05)",
+                    minWidth: 176,
+                    padding: "var(--space-1) 0",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.05)",
                   }}
                 >
                   {SORT_OPTIONS.map((opt) => (
-                    <button
+                    <div
                       key={opt.value}
                       role="option"
                       aria-selected={opt.value === sort}
-                      onClick={() => { setSort(opt.value); setSortOpen(false); }}
+                      tabIndex={0}
+                      onClick={() => {
+                        setSort(opt.value);
+                        setSortOpen(false);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSort(opt.value);
+                          setSortOpen(false);
+                        }
+                      }}
                       style={{
-                        display:    "block",
-                        width:      "100%",
-                        padding:    "7px 14px",
-                        minHeight:  44,
-                        fontSize:   "var(--font-size-base)",
+                        display: "block",
+                        width: "100%",
+                        padding: "7px 14px",
+                        minHeight: 44,
+                        fontSize: "var(--font-size-base)",
                         fontWeight: opt.value === sort ? 500 : 400,
-                        color:      opt.value === sort ? "var(--apple-accent)" : "var(--apple-label)",
+                        color: opt.value === sort ? "var(--apple-accent)" : "var(--apple-label)",
                         background: "transparent",
-                        border:     "none",
+                        border: "none",
                         transition: "background 80ms ease",
-                        textAlign:  "left",
-                        cursor:     "pointer",
+                        textAlign: "left",
+                        cursor: "pointer",
+                        lineHeight: "44px",
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.background = "var(--apple-fill)")}
                       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                     >
                       {opt.label}
-                    </button>
+                    </div>
                   ))}
                 </div>
               </>
@@ -334,22 +290,15 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
         </div>
       </div>
 
-
       {/* ── Cover grid ── */}
-      <div
-        style={{
-          flex:      1,
-          overflowY: "auto",
-          padding:   "var(--space-5) 0 var(--space-8)",
-        }}
-      >
+      <div className="library-content-area">
         <SpotlightBanner />
 
         <div style={{ padding: "0 var(--space-8)" }}>
           {/* Loading */}
           {entries === undefined && (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 300 }}>
-              <span style={{ color: "var(--apple-secondary-label)", fontSize: "var(--font-size-base)"}}>Loading…</span>
+            <div className="flex-center" style={{ minHeight: 300 }}>
+              <span className="text-muted">Loading…</span>
             </div>
           )}
 
@@ -365,8 +314,9 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
           )}
 
           {/* Grid or Table View */}
-          {entries !== undefined && entries.length > 0 && (
-            viewMode === "table" ? (
+          {entries !== undefined &&
+            entries.length > 0 &&
+            (viewMode === "table" ? (
               <LibraryTableView
                 entries={entries}
                 onOpenGame={onOpenGame ? (id) => onOpenGame(id) : (id) => navigate(`/game/${id}`)}
@@ -375,32 +325,25 @@ export function LibraryScreen({ onAddGame, onOpenLog, onOpenGame }: { onAddGame?
                 onSortChange={setSort}
               />
             ) : (
-              <div
-                style={{
-                  display:             "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-                  gap:                 "24px 16px",
-                }}
-              >
+              <div className="library-grid">
                 {entries.map(({ game, log }) => (
                   <CoverCard
                     key={game.igdbId}
                     game={{
                       ...game,
-                      status:               log.status,
-                      rating:               log.rating,
-                      platform:             log.platform || game.platforms?.[0],
+                      status: log.status,
+                      rating: log.rating,
+                      platform: log.platform || game.platforms?.[0],
                       completionPercentage: log.completionPercentage,
                     }}
-                    onClick={(id) => onOpenGame ? onOpenGame(id) : navigate(`/game/${id}`)}
+                    onClick={(id) => (onOpenGame ? onOpenGame(id) : navigate(`/game/${id}`))}
                     onChangeStatus={handleStatusChange}
                     onRate={(id, r) => handleRate(id, log.status, r)}
                     onLog={onOpenLog ? () => onOpenLog(game.igdbId) : undefined}
                   />
                 ))}
               </div>
-            )
-          )}
+            ))}
         </div>
 
         {/* Share Modal */}
@@ -424,60 +367,51 @@ function EmptyState({
   search,
   onAddGame,
 }: {
-  hasSearch:  boolean;
-  hasFilter:  boolean;
-  filter:     Status | "All";
-  search:     string;
+  hasSearch: boolean;
+  hasFilter: boolean;
+  filter: Status | "All";
+  search: string;
   onAddGame?: () => void;
 }) {
   const title = hasSearch
     ? `No results for "${search}"`
     : hasFilter
-    ? `Nothing in ${filter} yet`
-    : "Your library is empty";
+      ? `Nothing in ${filter} yet`
+      : "Your library is empty";
 
   const sub = hasSearch
     ? "Try a different title or clear your search."
     : "Start tracking your games by adding one.";
 
   return (
-    <div
-      style={{
-        display:        "flex",
-        flexDirection:  "column",
-        alignItems:     "center",
-        justifyContent: "center",
-        gap:            12,
-        minHeight:      300,
-      }}
-    >
-      <div
-        style={{
-          display:         "flex",
-          alignItems:      "center",
-          justifyContent:  "center",
-          width:           48,
-          height:          48,
-          borderRadius:    "var(--radius-xl)",
-          background:      "var(--apple-fill)",
-        }}
-      >
+    <div className="empty-state-container">
+      <div className="empty-state-icon">
         {hasSearch || hasFilter ? (
           <Search size={20} color="var(--apple-tertiary-label)" />
         ) : (
           <BookOpen size={20} color="var(--apple-tertiary-label)" />
         )}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-        <p style={{ color: "var(--apple-label)", fontSize: "var(--font-size-base)", fontWeight: 500 }}>{title}</p>
-        <p style={{ color: "var(--apple-secondary-label)", fontSize: "var(--font-size-sm)"}}>{sub}</p>
+      <div className="flex-col" style={{ alignItems: "center", gap: 4 }}>
+        <p className="text-body" style={{ fontWeight: 500 }}>
+          {title}
+        </p>
+        <p className="text-muted" style={{ fontSize: "var(--font-size-sm)" }}>
+          {sub}
+        </p>
       </div>
       {!hasSearch && !hasFilter && onAddGame && (
         <Button
           variant="primary"
           size="sm"
           onClick={onAddGame}
-          style={{ padding: "7px var(--space-4)", borderRadius: "var(--radius-lg)", fontSize: "var(--font-size-base)", fontWeight: 500 }}
+          className="hover-scale"
+          style={{
+            padding: "7px var(--space-4)",
+            borderRadius: "var(--radius-lg)",
+            fontSize: "var(--font-size-base)",
+            fontWeight: 500,
+          }}
         >
           <Plus size={13} />
           Add game

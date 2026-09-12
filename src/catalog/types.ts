@@ -9,21 +9,21 @@ import type { TimeToBeat } from "../types";
  */
 export interface CatalogGame {
   /** Stable integer ID (IGDB game ID). Primary key. */
-  igdbId:       number;
-  title:        string;
-  slug:         string;
-  developer:    string;
-  publisher?:   string;
-  releaseYear:  number;
+  igdbId: number;
+  title: string;
+  slug: string;
+  developer: string;
+  publisher?: string;
+  releaseYear: number;
   firstReleaseDate?: number;
-  summary?:     string;
-  genres:       string[];
-  platforms:    string[];
+  summary?: string;
+  genres: string[];
+  platforms: string[];
   /** Full HTTPS cover art URL (images.igdb.com). */
-  coverUrl?:    string;
-  timeToBeat?:  TimeToBeat;
+  coverUrl?: string;
+  timeToBeat?: TimeToBeat;
   /** IGDB community score 0–100. */
-  igdbRating?:  number;
+  igdbRating?: number;
 }
 
 // ─── ICatalogSource — the swappable catalog interface ─────────────────────────

@@ -16,22 +16,22 @@ export async function fetchDealsForWishlist(games: Game[]): Promise<void> {
       // CheapShark API requires exact or close title matches
       const query = encodeURIComponent(game.title);
       const res = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${query}&limit=3`);
-      
+
       if (!res.ok) {
         dealCache.set(game.igdbId, null);
         return;
       }
-      
+
       const data = await res.json();
-      
+
       if (data && data.length > 0) {
         // Find best match (usually first, but we check if title matches loosely)
         const deal = data[0];
         const price = parseFloat(deal.cheapest);
         const url = `https://www.cheapshark.com/redirect?dealID=${deal.cheapestDealID}`;
-        
+
         dealCache.set(game.igdbId, { price, url });
-        
+
         // Update database with deal info
         await db.games.update(game.igdbId, { dealPrice: price, dealUrl: url });
       } else {

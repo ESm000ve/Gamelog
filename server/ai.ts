@@ -54,6 +54,7 @@ export function attachAiRoutes(app: any) {
                   }
                 });
               } catch (fallbackErr) {
+                console.warn("Fallback embedding failed", fallbackErr);
                 data = await geminiFetch('gemini-embedding-2-preview:embedContent', {
                   model: 'models/gemini-embedding-2-preview',
                   content: {

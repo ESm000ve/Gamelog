@@ -17,5 +17,8 @@ export interface IImportSource {
   id: string;
   name: string;
   fetchLibrary(userId: string): Promise<ImportedGame[]>;
-  matchGames(games: ImportedGame[], onProgress?: (pct: number, msg: string) => void): Promise<MatchedImportGame[]>;
+  matchGames(
+    games: ImportedGame[],
+    onProgress?: (pct: number, msg: string) => void
+  ): Promise<MatchedImportGame[]>;
 }
