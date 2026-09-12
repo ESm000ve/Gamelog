@@ -1,7 +1,5 @@
 # Gamelog
 
-A clean, beautiful, and private personal game library tracker inspired by macOS Human Interface Guidelines. Keep track of what you're playing, what you want to play, and what you've beaten.
-
 ## Features
 
 - **Beautiful UI:** A meticulously crafted interface featuring glassmorphism, dynamic animations, and a rich dark mode.
